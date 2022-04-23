@@ -1,0 +1,4 @@
+node_modules
+core/**/*.js
+interface/**/*.js
+styles.css
