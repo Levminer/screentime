@@ -7,6 +7,5 @@
 		"strictFunctionTypes": true,
 		"resolveJsonModule": true
 	},
-	"exclude": ["node_modules"],
-	"include": ["interface/**/*", "core/**/*"]
+	"exclude": ["node_modules"]
 }
