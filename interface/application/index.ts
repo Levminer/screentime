@@ -16,6 +16,8 @@ const getDate = () => {
 	return { year, month, day, full_date }
 }
 
+const { year } = getDate()
+
 /**
  * Load storage
  */
@@ -26,12 +28,14 @@ let storage: LibStorage = JSON.parse(localStorage.getItem("storage"))
  */
 if (storage === null) {
 	const temp_storage: LibStorage = {
-		statistics: [],
+		statistics: {},
 		updatedAt: Date.now(),
 		createdAt: Date.now(),
 	}
 
-	temp_storage.statistics.push({
+	temp_storage.statistics[year] = []
+
+	temp_storage.statistics[year].push({
 		hours: hours,
 		minutes: minutes,
 		date: getDate(),
@@ -46,31 +50,36 @@ if (storage === null) {
  * Save minutes and hours
  */
 setInterval(() => {
-	const index = storage.statistics.length - 1
+	console.log(storage)
+
+	const index = storage.statistics[year].length - 1
+	const obj: LibStatistic = storage.statistics[year][index]
+
 	const currentDate = getDate()
 
-	minutes = storage.statistics[index].minutes
-	hours = storage.statistics[index].hours
+	minutes = obj.minutes
+	hours = obj.hours
 
-	if (storage.statistics[storage.statistics.length - 1].date.full_date === currentDate.full_date) {
-		storage.statistics[index].minutes++
+	if (obj.date.full_date === currentDate.full_date) {
+		obj.minutes++
 		minutes++
 
-		if (minutes % 60 === 0) {
-			storage.statistics[index].hours++
+		if (minutes === 60) {
+			obj.hours++
 			hours++
 
+			obj.minutes = 0
 			minutes = 0
 		}
 	} else {
-		storage.statistics.push({
+		storage.statistics[year].push({
 			hours: hours,
 			minutes: minutes,
 			date: getDate(),
 		})
 	}
 
-	console.log(storage.statistics)
-
 	localStorage.setItem("storage", JSON.stringify(storage))
-}, 500)
+
+	updateStatistics()
+}, 3000)

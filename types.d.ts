@@ -12,8 +12,12 @@ declare global {
 		minutes: number
 	}
 
+	interface LibStatistics {
+		2022?: LibStatistic[]
+	}
+
 	interface LibStorage {
-		statistics: LibStatistic[]
+		statistics: LibStatistics
 		updatedAt: number
 		createdAt: number
 	}

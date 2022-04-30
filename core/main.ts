@@ -1,13 +1,13 @@
 import { app, BrowserWindow } from "electron"
 import { join } from "path"
 
-let mainWindow : BrowserWindow
+let mainWindow: BrowserWindow
 
-const authmeVersion = app.getVersion()
+const appVersion = app.getVersion()
 
 const createWindow = () => {
 	mainWindow = new BrowserWindow({
-		title: `Authme (${authmeVersion})`,
+		title: `Screentime (${appVersion})`,
 		width: 1900,
 		height: 1000,
 		minWidth: 1000,
