@@ -4,6 +4,9 @@ declare global {
 		month: string
 		day: string
 		full_date: string
+		name: string
+		week: number
+		id: number
 	}
 
 	interface LibStatistic {

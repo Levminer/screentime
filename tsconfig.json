@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
+		"module": "CommonJS",
 		"moduleResolution": "Node",
 		"target": "ES2021",
 		"checkJs": true,

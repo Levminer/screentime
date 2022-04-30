@@ -4,10 +4,35 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script>
+			const exports = {}
+		</script>
 		<script defer src="./index.js"></script>
 		<link rel="stylesheet" href="../styles/styles.css" />
 	</head>
 	<body>
-		<h1 class="text-white">test</h1>
+		<div class="mx-auto mt-20 flex h-screen w-4/5 flex-col rounded-xl bg-gray-900">
+			<h1>Screentime</h1>
+
+			<div class="flex">
+				<div class="w-3/5 bg-gray-700">
+					<h2>Week</h2>
+					<canvas id="myChart" width="w-3/5" height="150"></canvas>
+				</div>
+				<div class="w-2/5 bg-gray-600">
+					<h2>Today</h2>
+
+					<div class="pt-3">
+						<h3 class="mb-0">Today you spent</h3>
+						<h3 class="todayUsage mt-0"></h3>
+					</div>
+
+					<div class="pt-3">
+						<h3 class="mb-0">Today's screen time</h3>
+						<h3 class="todayAvgUsage mt-0"></h3>
+					</div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>
