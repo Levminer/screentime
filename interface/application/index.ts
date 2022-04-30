@@ -1,28 +1,59 @@
-import * as dateFns from "date-fns"
 import { Chart } from "chart.js"
+import { getDate } from "../../libraries/date"
 
 let minutes: number = 0
 let hours: number = 0
+let chart: Chart
+const { year } = getDate()
 
-/**
- * Get current date
- */
-const getDate = () => {
-	const date = new Date()
+const weeklyChart = () => {
+	const date = getDate()
 
-	const year = date.getFullYear().toString()
-	const month = date.toLocaleString("en", { month: "long" })
-	const day = date.toISOString().substring(8, 10)
-	const name = dateFns.format(date, "EEEE")
-	const week = dateFns.getISOWeek(new Date())
-	const id = dateFns.getISODay(date)
+	console.log(storage)
 
-	const full_date = `${year} ${month} ${day}.`
+	const arr: LibStatistic[] = storage.statistics[year]
+	const dataset = [0, 0, 0, 0, 0, 0, 0]
 
-	return { year, month, day, full_date }
+	for (let i = 0; i < arr.length; i++) {
+		if (arr[i].date.week === date.week) {
+			dataset[arr[i].date.id] = arr[i].minutes
+		}
+	}
+
+	// @ts-ignore
+	const ctx = document.getElementById("myChart").getContext("2d")
+	chart = new Chart(ctx, {
+		type: "bar",
+		data: {
+			labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+			datasets: [
+				{
+					label: "Minutes",
+					data: dataset,
+					backgroundColor: ["#FFADAD", "#FFD6A5", "#FDFFB6", "#CAFFBF", "#9BF6FF", "#A0C4FF", "#BDB2FF"],
+					borderColor: ["gray"],
+				},
+			],
+		},
+		options: {
+			scales: {
+				y: {
+					beginAtZero: true,
+				},
+			},
+			plugins: {
+				legend: {
+					display: false,
+				},
+			},
+		},
+	})
 }
 
-const { year } = getDate()
+const updateChart = () => {
+	chart.destroy()
+	weeklyChart()
+}
 
 /**
  * Load storage
@@ -116,4 +147,5 @@ setInterval(() => {
 	localStorage.setItem("storage", JSON.stringify(storage))
 
 	updateStatistics()
-}, 3000)
+	//updateChart()
+}, 5000)

@@ -1,4 +1,6 @@
 node_modules
 core/**/*.js
 interface/**/*.js
+libraries/**/*.js
 styles.css
+dist
