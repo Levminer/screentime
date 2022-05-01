@@ -1,4 +1,6 @@
 declare global {
+	type LibPlatform = "windows" | "mac" | "linux"
+
 	interface LibDateObject {
 		year: string
 		month: string

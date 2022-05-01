@@ -4,7 +4,54 @@
 
 /* body */
 body {
+	background: rgb(0, 63, 92);
+	background: linear-gradient(200deg, rgba(0, 63, 92, 1) 0%, rgba(55, 76, 128, 1) 15%, rgba(122, 81, 149, 1) 33%, rgba(188, 80, 144, 1) 50%, rgba(239, 86, 117, 1) 66%, rgba(255, 118, 74, 1) 85%, rgba(255, 166, 0, 1) 100%);
 	color: white;
+}
+
+/* glass */
+.glass {
+	background: rgba(255, 255, 255, 0.25);
+	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border-radius: 10px;
+}
+
+/* black glass */
+.blackGlass {
+	background: rgba(0, 0, 0, 0.7);
+	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+	border-radius: 10px;
+}
+
+/* titlebar */
+.custom-titlebar {
+	color: white !important;
+	font-weight: 500 !important;
+}
+
+/* controls */
+.custom-titlebar-controls {
+	display: none !important;
+}
+
+/* submenu */
+.custom-titlebar-submenu {
+	background-color: #191919 !important;
+	text-transform: capitalize !important;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+/* separator */
+.custom-titlebar-separator {
+	margin: 8px 0px !important;
+	background-color: rgb(40, 40, 40) !important;
+	opacity: 1 !important;
 }
 
 /* headings */
