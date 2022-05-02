@@ -11,7 +11,7 @@ if (process.platform === "win32") {
 			menu: Menu.getApplicationMenu(),
 			browserWindow: window,
 			backgroundColor: "#000000",
-			// icon: "../../img/icon.png",
+			icon: "../../icons/icon.png",
 			unfocusEffect: false,
 		})
 	})

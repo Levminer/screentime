@@ -1,27 +1,58 @@
 import { Chart } from "chart.js"
 import { getDate } from "../../libraries/date"
+import { ipcRenderer as ipc } from "electron"
 
 let minutes: number = 0
 let hours: number = 0
 let chart: Chart
 const { year } = getDate()
 
+/**
+ * Load storage
+ */
+let storage: LibStorage = JSON.parse(localStorage.getItem("storage"))
+
+/**
+ * Create storage if it not exists
+ */
+if (storage === null) {
+	const tempStorage: LibStorage = {
+		statistics: {},
+		updatedAt: Date.now(),
+		createdAt: Date.now(),
+	}
+
+	tempStorage.statistics[year] = []
+
+	tempStorage.statistics[year].push({
+		hours,
+		minutes,
+		date: getDate(),
+	})
+
+	localStorage.setItem("storage", JSON.stringify(tempStorage))
+
+	storage = tempStorage
+}
+
+/**
+ * Create and update weekly chart
+ */
 const weeklyChart = () => {
 	const date = getDate()
-
-	console.log(storage)
 
 	const arr: LibStatistic[] = storage.statistics[year]
 	const dataset = [0, 0, 0, 0, 0, 0, 0]
 
 	for (let i = 0; i < arr.length; i++) {
 		if (arr[i].date.week === date.week) {
-			dataset[arr[i].date.id] = arr[i].minutes
+			dataset[arr[i].date.id] = arr[i].hours * 60 + arr[i].minutes
 		}
 	}
 
 	// @ts-ignore
-	const ctx = document.getElementById("myChart").getContext("2d")
+	const ctx = document.getElementById("weeklyChart").getContext("2d")
+
 	chart = new Chart(ctx, {
 		type: "bar",
 		data: {
@@ -30,7 +61,7 @@ const weeklyChart = () => {
 				{
 					label: "Minutes",
 					data: dataset,
-					backgroundColor: ["#FFADAD", "#FFD6A5", "#FDFFB6", "#CAFFBF", "#9BF6FF", "#A0C4FF", "#BDB2FF"],
+					backgroundColor: ["#003f5c", "#374c80", "#7a5195", "#bc5090", "#ef5675", "#ff764a", "#ffa600"],
 					borderColor: ["gray"],
 				},
 			],
@@ -39,11 +70,20 @@ const weeklyChart = () => {
 			scales: {
 				y: {
 					beginAtZero: true,
+					ticks: {
+						color: "gray",
+					},
+				},
+				x: {
+					ticks: {
+						color: "gray",
+					},
 				},
 			},
 			plugins: {
 				legend: {
 					display: false,
+					labels: {},
 				},
 			},
 		},
@@ -55,37 +95,21 @@ const updateChart = () => {
 	weeklyChart()
 }
 
-/**
- * Load storage
- */
-let storage: LibStorage = JSON.parse(localStorage.getItem("storage"))
-
-/**
- * Create storage if it not exists
- */
-if (storage === null) {
-	const temp_storage: LibStorage = {
-		statistics: {},
-		updatedAt: Date.now(),
-		createdAt: Date.now(),
-	}
-
-	temp_storage.statistics[year] = []
-
-	temp_storage.statistics[year].push({
-		hours: hours,
-		minutes: minutes,
-		date: getDate(),
-	})
-
-	localStorage.setItem("storage", JSON.stringify(temp_storage))
-
-	storage = temp_storage
-} else {
-	weeklyChart()
+// eslint-disable-next-line no-unused-vars
+const versionDialog = () => {
+	ipc.invoke("versionDialog")
 }
 
+/**
+ * Update statistics
+ */
 const updateStatistics = () => {
+	const index = storage.statistics[year].length - 1
+	const obj: LibStatistic = storage.statistics[year][index]
+
+	minutes = obj.minutes
+	hours = obj.hours
+
 	// today
 	let today: string
 
@@ -99,8 +123,8 @@ const updateStatistics = () => {
 
 	// today avg
 	let todayAvg: string
-	let userAvg = 200
-	let todayAllAvg = hours * 60 + minutes
+	const userAvg = 200
+	const todayAllAvg = hours * 60 + minutes
 
 	if (todayAllAvg > userAvg) {
 		todayAvg = `You spent ${todayAllAvg - userAvg} minutes more than an average user`
@@ -109,14 +133,39 @@ const updateStatistics = () => {
 	}
 
 	document.querySelector(".todayAvgUsage").textContent = todayAvg
+
+	// avg
+	const arr: LibStatistic[] = storage.statistics[year]
+	let time = 0
+	let counter = 0
+
+	for (let i = 0; i < arr.length; i++) {
+		time += arr[i].hours * 60 + minutes
+		counter++
+	}
+
+	const avg = (time / counter).toString()
+
+	document.querySelector(".avgUsage").textContent = `You spend about ${avg} minutes daily`
 }
 
-/**
- * Save minutes and hours
- */
-setInterval(() => {
-	//console.log(storage)
+const buildNumber = async () => {
+	const info = await ipc.invoke("info")
 
+	console.log(info)
+
+	if (info.buildNumber.startsWith("alpha")) {
+		document.querySelector(".buildContent").textContent = `You are running an alpha version of Screentime - Version ${info.appVersion} - Build ${info.buildNumber}`
+		document.querySelector(".build").style.display = "block"
+	} else if (info.buildNumber.startsWith("release")) {
+		document.querySelector(".buildContent").textContent = `You are running a pre release version of Screentime - Version ${info.appVersion} - Build ${info.buildNumber}`
+		document.querySelector(".build").style.display = "block"
+	}
+}
+
+buildNumber()
+
+const getToday = () => {
 	const index = storage.statistics[year].length - 1
 	const obj: LibStatistic = storage.statistics[year][index]
 
@@ -138,8 +187,8 @@ setInterval(() => {
 		}
 	} else {
 		storage.statistics[year].push({
-			hours: hours,
-			minutes: minutes,
+			hours,
+			minutes,
 			date: getDate(),
 		})
 	}
@@ -147,5 +196,15 @@ setInterval(() => {
 	localStorage.setItem("storage", JSON.stringify(storage))
 
 	updateStatistics()
-	//updateChart()
+	updateChart()
+}
+
+/**
+ * Save minutes and hours
+ */
+setInterval(() => {
+	getToday()
 }, 5000)
+
+weeklyChart()
+getToday()
