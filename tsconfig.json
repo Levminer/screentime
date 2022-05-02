@@ -5,7 +5,8 @@
 		"target": "ES2021",
 		"checkJs": true,
 		"strictFunctionTypes": true,
-		"resolveJsonModule": true
+		"resolveJsonModule": true,
+		"skipLibCheck": true
 	},
-	"exclude": ["node_modules"]
+	"exclude": ["node_modules", "dist", "scripts"]
 }

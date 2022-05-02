@@ -5,8 +5,9 @@ module.exports = {
 		es2021: true,
 		node: true,
 	},
-	extends: ["standard", "eslint:recommended", "plugin:node/recommended", "plugin:promise/recommended", "plugin:prettier/recommended"],
-	plugins: ["prettier"],
+	parser: "@typescript-eslint/parser",
+	extends: ["standard", "eslint:recommended", "plugin:node/recommended", "plugin:promise/recommended", "plugin:prettier/recommended", "plugin:@typescript-eslint/eslint-recommended"],
+	plugins: ["@typescript-eslint", "prettier"],
 	ignorePatterns: ["/node_modules/*", "/dist/*", "/build/*", "/src/*"],
 	parserOptions: {
 		ecmaVersion: 12,
@@ -23,5 +24,7 @@ module.exports = {
 		"func-style": ["error"],
 		"no-var": ["error"],
 		"node/no-unpublished-require": ["off"],
+		"node/no-unpublished-import": ["off"],
+		"node/no-unsupported-features/es-syntax": ["off"],
 	},
 }
