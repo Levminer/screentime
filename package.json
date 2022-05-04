@@ -7,7 +7,7 @@
 	"license": "GPL-3.0",
 	"scripts": {
 		"start": "node scripts/alpha-build.js && electron .",
-		"build": "node scripts/alpha-build.js && electron-builder --publish=never --x64",
+		"build": "node scripts/release-build.js && electron-builder --publish=never --x64",
 		"build:release": "node scripts/release-build.js && electron-builder --publish=never --x64",
 		"build:test": "node scripts/alpha-build.js && electron-builder --publish=never --x64 --dir -c scripts/test-build.json",
 		"watch": "concurrently 'npm:watch:tw' 'npm:watch:ts'",
