@@ -26,5 +26,6 @@ module.exports = {
 		"node/no-unpublished-require": ["off"],
 		"node/no-unpublished-import": ["off"],
 		"node/no-unsupported-features/es-syntax": ["off"],
+		"no-unused-vars": ["warn"],
 	},
 }

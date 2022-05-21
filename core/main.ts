@@ -1,6 +1,7 @@
-import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc } from "electron"
+import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, globalShortcut } from "electron"
 import { enable, initialize } from "@electron/remote/main"
 import { date, number } from "../build.json"
+import AutoLaunch = require("auto-launch")
 import { join } from "path"
 import { type, arch, release, cpus, totalmem } from "os"
 
@@ -12,6 +13,12 @@ let mainWindow: BrowserWindow
 let dev = false
 
 if (app.isPackaged === false) {
+	const debug = require("electron-debug")
+
+	debug({
+		showDevTools: false,
+	})
+
 	dev = true
 }
 
@@ -94,14 +101,35 @@ const createWindow = () => {
 	mainWindow.loadFile(join(__dirname, "../interface/application/index.html"))
 
 	mainWindow.on("ready-to-show", () => {
-		mainWindow.maximize()
+		if (args[1] !== "--hidden") {
+			mainWindow.maximize()
+			mainWindow.show()
+		}
+
+		if (dev === false) {
+			autoLauncher.enable()
+		}
+	})
+
+	globalShortcut.register("CommandOrControl+Shift+t", () => {
 		mainWindow.show()
 	})
 }
 
+/* App ready, start creating window and menu */
 app.on("ready", () => {
 	createWindow()
 	createMenu()
+})
+
+/**
+ * Auto launch on system start
+ */
+
+const autoLauncher = new AutoLaunch({
+	name: "Authme",
+	path: app.getPath("exe"),
+	isHidden: true,
 })
 
 /**
@@ -120,7 +148,7 @@ const versionDialog = async () => {
 		noLink: true,
 		type: "info",
 		message: text,
-		// icon: join(__dirname, "img/tray.png"),
+		icon: join(__dirname, "../icons/icon.png"),
 	})
 
 	if (result.response === 0) {
@@ -187,7 +215,46 @@ const createMenu = () => {
 				},
 			],
 		},
+		{
+			label: "About",
+			submenu: [
+				{
+					label: "Licenses",
+					click: async () => {
+						const result = await dialog.showMessageBox({
+							title: "Authme",
+							buttons: ["More", "Close"],
+							defaultId: 1,
+							cancelId: 1,
+							noLink: true,
+							type: "info",
+							message: "This software is licensed under GPL-3.0 \n\nCopyright © 2022 Lőrik Levente",
+						})
+
+						if (result.response === 0) {
+							shell.openExternal("https://authme.levminer.com/licenses.html")
+						}
+					},
+				},
+				{
+					type: "separator",
+				},
+				{
+					label: "Update",
+				},
+				{
+					type: "separator",
+				},
+				{
+					label: "Info",
+					accelerator: "CommandOrControl+i",
+					click: () => {
+						versionDialog()
+					},
+				},
+			],
+		},
 	])
 
-	// Menu.setApplicationMenu(menu)
+	Menu.setApplicationMenu(menu)
 }

@@ -204,7 +204,7 @@ const getToday = () => {
  */
 setInterval(() => {
 	getToday()
-}, 5000)
+}, 60000)
 
 weeklyChart()
 getToday()
