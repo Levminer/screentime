@@ -5,11 +5,12 @@ import AutoLaunch = require("auto-launch")
 import { join } from "path"
 import { type, arch, release, cpus, totalmem } from "os"
 
+// Window state
 let mainWindow: BrowserWindow
-
-let tray: Tray
-
 let mainWindowShown = false
+
+// Other states
+let tray: Tray
 
 /**
  * Check if running in development mode
@@ -60,6 +61,25 @@ if (process.platform === "win32") {
 	platform = "mac"
 } else {
 	platform = "linux"
+}
+
+/**
+ * Allow only one instance
+ */
+if (dev === false) {
+	const lock = app.requestSingleInstanceLock()
+
+	if (lock === false) {
+		console.log("Already running, shutting down")
+
+		app.exit()
+	} else {
+		app.on("second-instance", () => {
+			console.log("Already running, focusing window")
+
+			mainWindow.show()
+		})
+	}
 }
 
 /**
@@ -120,7 +140,7 @@ const createWindow = () => {
 	})
 
 	globalShortcut.register("CommandOrControl+Shift+t", () => {
-		mainWindow.show()
+		toggleMainWindow()
 	})
 }
 
