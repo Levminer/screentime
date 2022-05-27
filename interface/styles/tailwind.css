@@ -2,8 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+	.button {
+		@apply flex items-center justify-center gap-1 rounded-full border-2 border-white bg-white px-6 py-4 text-xl font-medium text-black duration-200 ease-in hover:bg-transparent hover:text-white focus:outline-none;
+	}
+}
+
 * {
 	color-scheme: dark;
+	user-select: none;
 }
 
 /* body */
@@ -11,7 +18,6 @@ body {
 	background: rgb(0, 63, 92);
 	background: linear-gradient(200deg, rgba(0, 63, 92, 1) 0%, rgba(55, 76, 128, 1) 15%, rgba(122, 81, 149, 1) 33%, rgba(188, 80, 144, 1) 50%, rgba(239, 86, 117, 1) 66%, rgba(255, 118, 74, 1) 85%, rgba(255, 166, 0, 1) 100%);
 	color: white;
-	user-select: none;
 }
 
 /* glass */
@@ -120,4 +126,32 @@ a {
 
 ::-webkit-scrollbar-corner {
 	background-color: #000000;
+}
+
+/* animation */
+@keyframes fadeEffect {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* dialog */
+.dialog {
+	text-align: center;
+	background-color: #191919 !important;
+	color: white;
+	padding: 3rem;
+	border-radius: 15px;
+	margin: auto;
+}
+
+.dialog::backdrop {
+	background: rgb(0 0 0 / 0.9);
+}
+
+dialog[open] {
+	animation: fadeEffect 0.5s;
 }

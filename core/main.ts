@@ -225,13 +225,10 @@ const createTray = () => {
 		{ type: "separator" },
 		{
 			label: mainWindowShown ? "Hide app" : "Show app",
+			accelerator: "CommandOrControl+Shift+t",
 			click: () => {
 				toggleMainWindow()
 			},
-		},
-		{ type: "separator" },
-		{
-			label: "Settings",
 		},
 		{ type: "separator" },
 		{
@@ -256,7 +253,7 @@ const createMenu = () => {
 			submenu: [
 				{
 					label: "Hide app",
-					accelerator: "CommandOrControl+q",
+					accelerator: "CommandOrControl+t",
 					click: () => {
 						toggleMainWindow()
 					},
@@ -266,6 +263,9 @@ const createMenu = () => {
 				},
 				{
 					label: "Settings",
+					click: () => {
+						mainWindow.webContents.send("toggleSettings")
+					},
 				},
 				{
 					type: "separator",

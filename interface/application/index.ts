@@ -1,6 +1,7 @@
 import { Chart } from "chart.js"
 import { getDate } from "../../libraries/date"
 import { ipcRenderer as ipc } from "electron"
+import { toggleSettings } from "./functions/settings"
 
 let minutes: number = 0
 let hours: number = 0
@@ -99,6 +100,10 @@ const updateChart = () => {
 const versionDialog = () => {
 	ipc.invoke("versionDialog")
 }
+
+ipc.on("toggleSettings", () => {
+	toggleSettings()
+})
 
 /**
  * Update statistics
