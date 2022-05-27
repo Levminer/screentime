@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, globalShortcut } from "electron"
+import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, globalShortcut, Tray } from "electron"
 import { enable, initialize } from "@electron/remote/main"
 import { date, number } from "../build.json"
 import AutoLaunch = require("auto-launch")
@@ -6,6 +6,10 @@ import { join } from "path"
 import { type, arch, release, cpus, totalmem } from "os"
 
 let mainWindow: BrowserWindow
+
+let tray: Tray
+
+let mainWindowShown = false
 
 /**
  * Check if running in development mode
@@ -104,6 +108,10 @@ const createWindow = () => {
 		if (args[1] !== "--hidden") {
 			mainWindow.maximize()
 			mainWindow.show()
+
+			mainWindowShown = true
+
+			createTray()
 		}
 
 		if (dev === false) {
@@ -116,10 +124,34 @@ const createWindow = () => {
 	})
 }
 
+const toggleMainWindow = () => {
+	if (mainWindowShown === false) {
+		mainWindow.show()
+
+		mainWindowShown = true
+	} else {
+		mainWindow.hide()
+
+		mainWindowShown = false
+	}
+
+	createTray()
+}
+
 /* App ready, start creating window and menu */
 app.on("ready", () => {
+	const iconPath = join(__dirname, "../icons/icon.png")
+	tray = new Tray(iconPath)
+
+	tray.on("click", () => {
+		toggleMainWindow()
+		createTray()
+		createMenu()
+	})
+
 	createWindow()
 	createMenu()
+	createTray()
 })
 
 /**
@@ -161,6 +193,40 @@ ipc.handle("versionDialog", () => {
 })
 
 /**
+ * Create tray
+ */
+const createTray = () => {
+	const contextmenu = Menu.buildFromTemplate([
+		{
+			label: `Screentime (${appVersion})`,
+			enabled: false,
+			// icon: join(__dirname, "icons/icon.png"),
+		},
+		{ type: "separator" },
+		{
+			label: mainWindowShown ? "Hide app" : "Show app",
+			click: () => {
+				toggleMainWindow()
+			},
+		},
+		{ type: "separator" },
+		{
+			label: "Settings",
+		},
+		{ type: "separator" },
+		{
+			label: "Exit",
+			click: () => {
+				app.quit()
+			},
+		},
+	])
+
+	tray.setToolTip("Screentime")
+	tray.setContextMenu(contextmenu)
+}
+
+/**
  * Create application menu
  */
 const createMenu = () => {
@@ -169,7 +235,11 @@ const createMenu = () => {
 			label: "File",
 			submenu: [
 				{
-					label: "Show app",
+					label: "Hide app",
+					accelerator: "CommandOrControl+q",
+					click: () => {
+						toggleMainWindow()
+					},
 				},
 				{
 					type: "separator",
