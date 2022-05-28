@@ -176,7 +176,7 @@ const getToday = () => {
 
 	const currentDate = getDate()
 
-	if (obj.date.full_date === currentDate.full_date) {
+	if (obj.date.fullDate === currentDate.fullDate) {
 		minutes = obj.minutes
 		hours = obj.hours
 

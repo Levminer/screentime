@@ -8,12 +8,12 @@ const year = date.getFullYear()
 const month = date.toLocaleString("en-us", { timeZone: "UTC", month: "long" })
 const day = date.toISOString().substring(8, 10)
 
-const build_number = `alpha.${build}`
-const release_date = `${year}. ${month} ${day}.`
+const buildNumber = `alpha.${build}`
+const releaseDate = `${year}. ${month} ${day}.`
 
 const file = {
-	number: build_number,
-	date: release_date,
+	number: buildNumber,
+	date: releaseDate,
 }
 
 if (!fs.existsSync("dist")) {

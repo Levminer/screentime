@@ -7,7 +7,7 @@ dayjs.extend(isoWeek)
  * Get current date
  */
 export const getDate = () => {
-	let date = new Date()
+	const date = new Date()
 
 	const year = date.getFullYear().toString()
 	const month = date.toLocaleString("en", { month: "long" })
@@ -16,7 +16,7 @@ export const getDate = () => {
 	const week = dayjs(date).isoWeek()
 	const id = dayjs(date).isoWeekday() - 1
 
-	const full_date = `${year} ${month} ${day}.`
+	const fullDate = `${year} ${month} ${day}.`
 
-	return { year, month, day, full_date, week, name, id }
+	return { year, month, day, fullDate, week, name, id }
 }
