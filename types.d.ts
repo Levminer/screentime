@@ -6,7 +6,7 @@ declare global {
 		year: string
 		month: string
 		day: string
-		full_date: string
+		fullDate: string
 		name: string
 		week: number
 		id: number
@@ -23,6 +23,9 @@ declare global {
 	}
 
 	interface LibStorage {
+		settings: {
+			launchOnStartup: boolean
+		}
 		statistics: LibStatistics
 		updatedAt: number
 		createdAt: number
@@ -41,6 +44,9 @@ declare global {
 
 		/* Close the modal */
 		close: Function
+
+		/** Property if dialog open */
+		open: boolean
 	}
 }
 

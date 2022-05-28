@@ -9,20 +9,22 @@
 		"start": "node scripts/alpha-build.js && electron .",
 		"build": "node scripts/release-build.js && electron-builder --publish=never --x64",
 		"build:alpha": "node scripts/alpha-build.js && electron-builder --publish=never --x64",
+		"build:bundle": "tsc && tailwindcss -i ./interface/styles/tailwind.css -o ./interface/styles/styles.css -c .tailwindrc.js --minify",
 		"build:test": "node scripts/alpha-build.js && electron-builder --publish=never --x64 --dir -c scripts/test-build.json",
 		"watch": "concurrently 'npm:watch:tw' 'npm:watch:ts'",
-		"watch:tw": "tailwindcss -i ./interface/styles/tailwind.css -o ./interface/styles/styles.css -c .tailwindrc.js --watch --minify",
-		"watch:ts": "tsc -w"
+		"watch:tw": "tailwindcss -i ./interface/styles/tailwind.css -o ./interface/styles/styles.css -c .tailwindrc.js --minify --watch",
+		"watch:ts": "tsc -w",
+		"lint": "eslint --fix .",
+		"eslint": "eslint ."
 	},
 	"main": "core/main.js",
 	"build": {
 		"appId": "com.levminer.screentime",
 		"files": [
 			"!screenshots",
-			"!samples",
 			"!scripts",
-			"!**/*.scss",
-			"!.*"
+			"!.*",
+			"!*.ts"
 		],
 		"win": {
 			"target": [

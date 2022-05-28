@@ -139,6 +139,14 @@ const createWindow = () => {
 		}
 	})
 
+	mainWindow.on("close", (event) => {
+		if (dev === false) {
+			event.preventDefault()
+
+			toggleMainWindow()
+		}
+	})
+
 	globalShortcut.register("CommandOrControl+Shift+t", () => {
 		toggleMainWindow()
 	})
@@ -234,7 +242,7 @@ const createTray = () => {
 		{
 			label: "Exit",
 			click: () => {
-				app.quit()
+				app.exit()
 			},
 		},
 	])
@@ -263,6 +271,7 @@ const createMenu = () => {
 				},
 				{
 					label: "Settings",
+					accelerator: "CommandOrControl+s",
 					click: () => {
 						mainWindow.webContents.send("toggleSettings")
 					},
@@ -274,7 +283,7 @@ const createMenu = () => {
 					label: "Exit",
 					accelerator: "CommandOrControl+w",
 					click: () => {
-						app.quit()
+						app.exit()
 					},
 				},
 			],
