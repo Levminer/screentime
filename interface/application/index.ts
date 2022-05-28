@@ -19,6 +19,9 @@ let storage: LibStorage = JSON.parse(localStorage.getItem("storage"))
 if (storage === null) {
 	const tempStorage: LibStorage = {
 		statistics: {},
+		settings: {
+			launchOnStartup: true,
+		},
 		updatedAt: Date.now(),
 		createdAt: Date.now(),
 	}
@@ -96,8 +99,7 @@ const updateChart = () => {
 	weeklyChart()
 }
 
-// eslint-disable-next-line no-unused-vars
-const versionDialog = () => {
+export const versionDialog = () => {
 	ipc.invoke("versionDialog")
 }
 
@@ -119,7 +121,7 @@ const updateStatistics = () => {
 	let today: string
 
 	if (hours === 0) {
-		today = `${minutes} minutes`
+		today = `Today you spent ${minutes} minutes`
 	} else {
 		today = `${hours} hours and ${minutes} minutes`
 	}
@@ -149,7 +151,7 @@ const updateStatistics = () => {
 		counter++
 	}
 
-	const avg = (time / counter).toString()
+	const avg = Math.round(time / counter).toString()
 
 	document.querySelector(".avgUsage").textContent = `You spend about ${avg} minutes daily`
 }
