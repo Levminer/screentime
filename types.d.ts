@@ -23,12 +23,21 @@ declare global {
 	}
 
 	interface LibStorage {
-		settings: {
-			launchOnStartup: boolean
-		}
 		statistics: LibStatistics
 		updatedAt: number
 		createdAt: number
+	}
+
+	interface LibSettings {
+		info: {
+			version: string
+			build: string
+			date: string
+		}
+
+		settings: {
+			launchOnStartup: boolean
+		}
 	}
 
 	/** Query selector element types */

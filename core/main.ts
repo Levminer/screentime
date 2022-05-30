@@ -4,10 +4,12 @@ import { date, number } from "../build.json"
 import AutoLaunch = require("auto-launch")
 import { join } from "path"
 import { type, arch, release, cpus, totalmem } from "os"
+import { existsSync, mkdirSync, writeFileSync } from "fs"
 
 // Window state
 let mainWindow: BrowserWindow
 let mainWindowShown = false
+let firstStart = false
 
 // Other states
 let tray: Tray
@@ -61,6 +63,46 @@ if (process.platform === "win32") {
 	platform = "mac"
 } else {
 	platform = "linux"
+}
+
+/**
+ * Check for folders
+ */
+const parentFolder = join(app.getPath("appData"), "Levminer")
+const folderPath = dev ? join(app.getPath("appData"), "Levminer", "Screentime Dev") : join(app.getPath("appData"), "Levminer", "Screentime")
+
+// Check if /Levminer path exists
+if (!existsSync(parentFolder)) {
+	mkdirSync(join(parentFolder))
+}
+
+// Check if /Authme path exists
+if (!existsSync(folderPath)) {
+	mkdirSync(folderPath)
+}
+
+const settingsFile: LibSettings = {
+	info: {
+		version: appVersion,
+		build: buildNumber,
+		date: releaseDate,
+	},
+
+	settings: {
+		launchOnStartup: true,
+	},
+}
+
+// Create settings if not exists
+if (!existsSync(join(folderPath, "settings.json"))) {
+	writeFileSync(join(folderPath, "settings.json"), JSON.stringify(settingsFile, null, "\t"))
+
+	firstStart = true
+}
+
+// Save settings
+const saveSettings = () => {
+	writeFileSync(join(folderPath, "settings.json"), JSON.stringify(settingsFile, null, "\t"))
 }
 
 /**
@@ -134,7 +176,9 @@ const createWindow = () => {
 			createTray()
 		}
 
-		if (dev === false) {
+		if (firstStart === true && dev === false) {
+			saveSettings()
+
 			autoLauncher.enable()
 		}
 	})
@@ -187,7 +231,7 @@ app.on("ready", () => {
  */
 
 const autoLauncher = new AutoLaunch({
-	name: "Authme",
+	name: "Screentime",
 	path: app.getPath("exe"),
 	isHidden: true,
 })
@@ -216,8 +260,19 @@ const versionDialog = async () => {
 	}
 }
 
+/* IPCs */
 ipc.handle("versionDialog", () => {
 	versionDialog()
+})
+
+ipc.handle("toggleStartup", async () => {
+	const enabled: boolean = await autoLauncher.isEnabled()
+
+	if (enabled === true) {
+		autoLauncher.disable()
+	} else {
+		autoLauncher.enable()
+	}
 })
 
 /**
@@ -226,16 +281,18 @@ ipc.handle("versionDialog", () => {
 const createTray = () => {
 	const contextmenu = Menu.buildFromTemplate([
 		{
-			label: `Screentime (${appVersion})`,
-			enabled: false,
-			// icon: join(__dirname, "icons/icon.png"),
-		},
-		{ type: "separator" },
-		{
 			label: mainWindowShown ? "Hide app" : "Show app",
 			accelerator: "CommandOrControl+Shift+t",
 			click: () => {
 				toggleMainWindow()
+			},
+		},
+		{ type: "separator" },
+		{
+			label: "Settings",
+			click: () => {
+				mainWindow.show()
+				mainWindow.webContents.send("toggleSettings")
 			},
 		},
 		{ type: "separator" },
@@ -260,15 +317,12 @@ const createMenu = () => {
 			label: "File",
 			submenu: [
 				{
-					label: "Hide app",
-					accelerator: "CommandOrControl+t",
+					label: mainWindowShown ? "Show app" : "Hide app",
 					click: () => {
 						toggleMainWindow()
 					},
 				},
-				{
-					type: "separator",
-				},
+				{ type: "separator" },
 				{
 					label: "Settings",
 					accelerator: "CommandOrControl+s",
@@ -276,9 +330,7 @@ const createMenu = () => {
 						mainWindow.webContents.send("toggleSettings")
 					},
 				},
-				{
-					type: "separator",
-				},
+				{ type: "separator" },
 				{
 					label: "Exit",
 					accelerator: "CommandOrControl+w",
@@ -296,21 +348,42 @@ const createMenu = () => {
 					role: "resetZoom",
 					accelerator: "CommandOrControl+0",
 				},
-				{
-					type: "separator",
-				},
+				{ type: "separator" },
 				{
 					label: "Zoom In",
 					role: "zoomIn",
 					accelerator: "CommandOrControl+1",
 				},
-				{
-					type: "separator",
-				},
+				{ type: "separator" },
 				{
 					label: "Zoom Out",
 					role: "zoomOut",
 					accelerator: "CommandOrControl+2",
+				},
+			],
+		},
+		{
+			label: "Help",
+			submenu: [
+				{
+					label: "Feedback",
+					click: () => {
+						shell.openExternal("https://github.com/Levminer/screentime/issues")
+					},
+				},
+				{ type: "separator" },
+				{
+					label: "Release notes",
+					click: () => {
+						shell.openExternal("https://github.com/Levminer/screentime/releases")
+					},
+				},
+				{ type: "separator" },
+				{
+					label: "Support",
+					click: () => {
+						shell.openExternal("https://paypal.me/levminer")
+					},
 				},
 			],
 		},
@@ -335,15 +408,11 @@ const createMenu = () => {
 						}
 					},
 				},
-				{
-					type: "separator",
-				},
+				{ type: "separator" },
 				{
 					label: "Update",
 				},
-				{
-					type: "separator",
-				},
+				{ type: "separator" },
 				{
 					label: "Info",
 					accelerator: "CommandOrControl+i",

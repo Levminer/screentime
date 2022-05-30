@@ -1,7 +1,20 @@
 import { Chart } from "chart.js"
 import { getDate } from "../../libraries/date"
 import { ipcRenderer as ipc } from "electron"
-import { toggleSettings } from "./functions/settings"
+import { app } from "@electron/remote"
+import * as settings from "./functions/settings"
+import { join } from "path"
+import { readFileSync } from "fs"
+
+let dev = false
+
+if (app.isPackaged === false) {
+	dev = true
+}
+
+const folderPath = dev ? join(app.getPath("appData"), "Levminer", "Screentime Dev") : join(app.getPath("appData"), "Levminer", "Screentime")
+
+const settingsFile: LibSettings = JSON.parse(readFileSync(join(folderPath, "settings.json"), "utf-8"))
 
 let minutes: number = 0
 let hours: number = 0
@@ -19,9 +32,6 @@ let storage: LibStorage = JSON.parse(localStorage.getItem("storage"))
 if (storage === null) {
 	const tempStorage: LibStorage = {
 		statistics: {},
-		settings: {
-			launchOnStartup: true,
-		},
 		updatedAt: Date.now(),
 		createdAt: Date.now(),
 	}
@@ -104,7 +114,7 @@ export const versionDialog = () => {
 }
 
 ipc.on("toggleSettings", () => {
-	toggleSettings()
+	settings.toggleSettings()
 })
 
 /**
@@ -158,8 +168,6 @@ const updateStatistics = () => {
 
 const buildNumber = async () => {
 	const info = await ipc.invoke("info")
-
-	console.log(info)
 
 	if (info.buildNumber.startsWith("alpha")) {
 		document.querySelector(".buildContent").textContent = `You are running an alpha version of Screentime - Version ${info.appVersion} - Build ${info.buildNumber}`
@@ -215,3 +223,12 @@ setInterval(() => {
 
 weeklyChart()
 getToday()
+
+const toggle: HTMLInputElement = document.querySelector("#startupToggle")
+const label = document.querySelector("#startupLabel")
+
+toggle.checked = settingsFile.settings.launchOnStartup
+
+if (toggle.checked === false) {
+	label.textContent = "Off"
+}
