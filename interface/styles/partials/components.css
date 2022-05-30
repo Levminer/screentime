@@ -1,0 +1,37 @@
+/* dialog */
+
+.dialog::backdrop {
+	background: rgb(0 0 0 / 0.9);
+}
+
+dialog[open] {
+	animation: fadeEffect 0.5s;
+}
+
+/* toggle */
+.toggle:checked ~ .toggle-bg {
+	background-color: black !important;
+	transition: 0.2s ease-in;
+}
+
+.toggle:checked {
+	right: 4px !important;
+}
+
+/* glass */
+.glass {
+	background: rgba(255, 255, 255, 0.25);
+	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	border-radius: 10px;
+}
+
+/* black glass */
+.blackGlass {
+	background: rgba(0, 0, 0, 0.7);
+	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+	border-radius: 10px;
+}

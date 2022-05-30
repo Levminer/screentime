@@ -1,0 +1,112 @@
+* {
+	color-scheme: dark;
+	user-select: none;
+}
+
+/* body */
+body {
+	background: rgb(0, 63, 92);
+	background: linear-gradient(200deg, rgba(0, 63, 92, 1) 0%, rgba(55, 76, 128, 1) 15%, rgba(122, 81, 149, 1) 33%, rgba(188, 80, 144, 1) 50%, rgba(239, 86, 117, 1) 66%, rgba(255, 118, 74, 1) 85%, rgba(255, 166, 0, 1) 100%);
+	color: white;
+}
+
+/* headings */
+h1 {
+	font-size: 64px;
+	font-weight: bold;
+	margin: 2rem;
+}
+
+h2 {
+	font-size: 48px;
+	font-weight: bold;
+	margin: 2rem;
+}
+
+h3 {
+	font-size: 32px;
+	font-weight: bold;
+	margin: 2rem;
+}
+
+h4 {
+	font-size: 24px;
+	margin: 2rem;
+	font-weight: normal;
+}
+
+h5 {
+	font-size: 18px;
+	margin: 2rem;
+	font-weight: normal;
+}
+
+a {
+	font-weight: 500;
+}
+
+/* selection */
+::selection {
+	color: white;
+	background: gray;
+}
+
+/* scrollbar */
+::-webkit-scrollbar-track {
+	background-color: #000000;
+}
+
+::-webkit-scrollbar {
+	width: 12px;
+	background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: rgb(40, 40, 40);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: rgb(50, 50, 50);
+}
+
+::-webkit-scrollbar-corner {
+	background-color: #000000;
+}
+
+/* titlebar */
+.custom-titlebar {
+	color: white !important;
+	font-weight: 500 !important;
+}
+
+/* controls */
+.custom-titlebar-controls {
+	display: none !important;
+}
+
+/* submenu */
+.custom-titlebar-submenu {
+	background-color: #191919 !important;
+	text-transform: capitalize !important;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+/* separator */
+.custom-titlebar-separator {
+	margin: 8px 0px !important;
+	background-color: rgb(40, 40, 40) !important;
+	opacity: 1 !important;
+}
+
+
+/* animation */
+@keyframes fadeEffect {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
