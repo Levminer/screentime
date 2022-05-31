@@ -198,6 +198,7 @@ const createWindow = () => {
 
 const toggleMainWindow = () => {
 	if (mainWindowShown === false) {
+		mainWindow.maximize()
 		mainWindow.show()
 
 		mainWindowShown = true
@@ -270,9 +271,15 @@ ipc.handle("toggleStartup", async () => {
 
 	if (enabled === true) {
 		autoLauncher.disable()
+
+		settingsFile.settings.launchOnStartup = false
 	} else {
 		autoLauncher.enable()
+
+		settingsFile.settings.launchOnStartup = true
 	}
+
+	saveSettings()
 })
 
 /**

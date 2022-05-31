@@ -27,3 +27,14 @@ export const changeStartup = () => {
 
 	ipc.invoke("toggleStartup")
 }
+
+export const setupSettings = (settingsFile: LibSettings) => {
+	const toggle: HTMLInputElement = document.querySelector("#startupToggle")
+	const label = document.querySelector("#startupLabel")
+
+	toggle.checked = settingsFile.settings.launchOnStartup
+
+	if (toggle.checked === false) {
+		label.textContent = "Off"
+	}
+}

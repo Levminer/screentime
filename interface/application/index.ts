@@ -223,12 +223,4 @@ setInterval(() => {
 
 weeklyChart()
 getToday()
-
-const toggle: HTMLInputElement = document.querySelector("#startupToggle")
-const label = document.querySelector("#startupLabel")
-
-toggle.checked = settingsFile.settings.launchOnStartup
-
-if (toggle.checked === false) {
-	label.textContent = "Off"
-}
+settings.setupSettings(settingsFile)
