@@ -6,20 +6,28 @@ import * as settings from "./functions/settings"
 import { join } from "path"
 import { readFileSync } from "fs"
 
+/**
+ * States
+ */
+let minutes: number = 0
+let hours: number = 0
+let chart: Chart
+const { year } = getDate()
+
+/**
+ * Check if running in development
+ */
 let dev = false
 
 if (app.isPackaged === false) {
 	dev = true
 }
 
+/**
+ * Get settings file
+ */
 const folderPath = dev ? join(app.getPath("appData"), "Levminer", "Screentime Dev") : join(app.getPath("appData"), "Levminer", "Screentime")
-
 const settingsFile: LibSettings = JSON.parse(readFileSync(join(folderPath, "settings.json"), "utf-8"))
-
-let minutes: number = 0
-let hours: number = 0
-let chart: Chart
-const { year } = getDate()
 
 /**
  * Load storage
@@ -50,7 +58,7 @@ if (storage === null) {
 }
 
 /**
- * Create and update weekly chart
+ * Create weekly chart
  */
 const weeklyChart = () => {
 	const date = getDate()
@@ -120,14 +128,14 @@ ipc.on("toggleSettings", () => {
 /**
  * Update statistics
  */
-const updateStatistics = () => {
+const setStatistics = () => {
 	const index = storage.statistics[year].length - 1
 	const obj: LibStatistic = storage.statistics[year][index]
 
 	minutes = obj.minutes
 	hours = obj.hours
 
-	// today
+	// Todays screen time
 	let today: string
 
 	if (hours === 0) {
@@ -138,20 +146,7 @@ const updateStatistics = () => {
 
 	document.querySelector(".todayUsage").textContent = today
 
-	// today avg
-	let todayAvg: string
-	const userAvg = 200
-	const todayAllAvg = hours * 60 + minutes
-
-	if (todayAllAvg > userAvg) {
-		todayAvg = `You spent ${todayAllAvg - userAvg} minutes more than an average user`
-	} else {
-		todayAvg = `You spent ${userAvg - todayAllAvg} minutes less than an average user`
-	}
-
-	document.querySelector(".todayAvgUsage").textContent = todayAvg
-
-	// avg
+	// Average screen time
 	const arr: LibStatistic[] = storage.statistics[year]
 	let time = 0
 	let counter = 0
@@ -164,6 +159,19 @@ const updateStatistics = () => {
 	const avg = Math.round(time / counter).toString()
 
 	document.querySelector(".avgUsage").textContent = `You spend about ${avg} minutes daily`
+
+	// Global average
+	let globalAvg: string
+	const globalUserAvg = 200
+	const todayAllAvg = hours * 60 + minutes
+
+	if (todayAllAvg > globalUserAvg) {
+		globalAvg = `You spent ${todayAllAvg - globalUserAvg} minutes more than an average user`
+	} else {
+		globalAvg = `You spent ${globalUserAvg - todayAllAvg} minutes less than an average user`
+	}
+
+	document.querySelector(".globalAvgUsage").textContent = globalAvg
 }
 
 const buildNumber = async () => {
@@ -178,9 +186,10 @@ const buildNumber = async () => {
 	}
 }
 
-buildNumber()
-
-const getToday = () => {
+/**
+ * Update statistics
+ */
+const updateStatistics = () => {
 	const index = storage.statistics[year].length - 1
 	const obj: LibStatistic = storage.statistics[year][index]
 
@@ -210,7 +219,7 @@ const getToday = () => {
 
 	localStorage.setItem("storage", JSON.stringify(storage))
 
-	updateStatistics()
+	setStatistics()
 	updateChart()
 }
 
@@ -218,9 +227,10 @@ const getToday = () => {
  * Save minutes and hours
  */
 setInterval(() => {
-	getToday()
+	updateStatistics()
 }, 60000)
 
 weeklyChart()
-getToday()
+updateStatistics()
 settings.setupSettings(settingsFile)
+buildNumber()

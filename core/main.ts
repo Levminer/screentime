@@ -6,13 +6,16 @@ import { join } from "path"
 import { type, arch, release, cpus, totalmem } from "os"
 import { existsSync, mkdirSync, writeFileSync } from "fs"
 
-// Window state
+/**
+ * Window states
+ */
 let mainWindow: BrowserWindow
 let mainWindowShown = false
-let firstStart = false
 
 // Other states
 let tray: Tray
+let menu: Menu
+let firstStart = false
 
 /**
  * Check if running in development mode
@@ -128,9 +131,6 @@ if (dev === false) {
  * Create main window
  */
 const createWindow = () => {
-	// Init remote module
-	initialize()
-
 	/**
 	 * Window Controls Overlay
 	 */
@@ -163,6 +163,8 @@ const createWindow = () => {
 		},
 	})
 
+	// Initialize window
+	initialize()
 	enable(mainWindow.webContents)
 	mainWindow.loadFile(join(__dirname, "../interface/application/index.html"))
 
@@ -196,6 +198,9 @@ const createWindow = () => {
 	})
 }
 
+/**
+ * Show/hide main window
+ */
 const toggleMainWindow = () => {
 	if (mainWindowShown === false) {
 		mainWindow.maximize()
@@ -213,8 +218,11 @@ const toggleMainWindow = () => {
 
 /* App ready, start creating window and menu */
 app.on("ready", () => {
-	const iconPath = join(__dirname, "../icons/icon.png")
-	tray = new Tray(iconPath)
+	/**
+	 * Create tray
+	 */
+	tray = new Tray(join(__dirname, "../icons/icon.png"))
+	tray.setToolTip("Screentime")
 
 	tray.on("click", () => {
 		toggleMainWindow()
@@ -222,6 +230,9 @@ app.on("ready", () => {
 		createMenu()
 	})
 
+	/**
+	 * Start app
+	 */
 	createWindow()
 	createMenu()
 	createTray()
@@ -230,7 +241,6 @@ app.on("ready", () => {
 /**
  * Auto launch on system start
  */
-
 const autoLauncher = new AutoLaunch({
 	name: "Screentime",
 	path: app.getPath("exe"),
@@ -283,7 +293,7 @@ ipc.handle("toggleStartup", async () => {
 })
 
 /**
- * Create tray
+ * Create tray menu
  */
 const createTray = () => {
 	const contextmenu = Menu.buildFromTemplate([
@@ -311,7 +321,6 @@ const createTray = () => {
 		},
 	])
 
-	tray.setToolTip("Screentime")
 	tray.setContextMenu(contextmenu)
 }
 
@@ -319,7 +328,7 @@ const createTray = () => {
  * Create application menu
  */
 const createMenu = () => {
-	const menu = Menu.buildFromTemplate([
+	menu = Menu.buildFromTemplate([
 		{
 			label: "File",
 			submenu: [
