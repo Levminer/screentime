@@ -17,7 +17,7 @@
 	</head>
 	<body>
 		<!-- build number -->
-		<div class="build sticky top-0 z-10 hidden w-full bg-black font-bold text-white">
+		<div class="build sticky top-0 z-10 hidden w-full bg-black font-bold text-white" hover:text-black>
 			<div class="container mx-auto flex flex-row items-center justify-center py-2">
 				<div class="flex">
 					<h5 class="buildContent m-0 mx-3 flex flex-row text-center font-bold">You are running a pre release version of Authme!</h5>
@@ -26,7 +26,7 @@
 		</div>
 
 		<!-- page -->
-		<div class="glass mx-auto my-20 flex h-screen w-4/5 flex-col rounded-xl shadow-2xl shadow-gray-800">
+		<div class="glass mx-auto my-20 flex w-4/5 flex-col rounded-xl shadow-2xl shadow-gray-800">
 			<div class="flex w-full flex-row items-center justify-between">
 				<h1>Screentime</h1>
 
@@ -46,7 +46,7 @@
 				</div>
 			</div>
 
-			<div class="blackGlass flex">
+			<div class="blackGlass m-5 flex">
 				<div class="w-3/5 border-r-2 border-gray-500">
 					<h2 class="border-b-2 uppercase">Week</h2>
 					<canvas id="weeklyChart"></canvas>
@@ -72,9 +72,275 @@
 					</div>
 				</div>
 			</div>
-			<div class="w-full">
+			<div class="mb-20 w-full">
 				<h2 class="border-b-2 uppercase">Month</h2>
-				<h3>COMING SOON!</h3>
+
+				<div class="md:p-0 xl:p-5">
+					<table class="w-full border-4 border-white">
+						<thead class="border-4 border-white text-2xl">
+							<tr>
+								<th class="lg:w-30 md:w-30 h-10 w-10 p-2 text-xs sm:w-20 xl:w-40 xl:text-sm">
+									<span class="text-2xl">Monday</span>
+								</th>
+								<th class="lg:w-30 md:w-30 h-10 w-10 p-2 text-xs sm:w-20 xl:w-40 xl:text-sm">
+									<span class="text-2xl">Tuesday</span>
+								</th>
+								<th class="lg:w-30 md:w-30 h-10 w-10 p-2 text-xs sm:w-20 xl:w-40 xl:text-sm">
+									<span class="text-2xl">Wednesday</span>
+								</th>
+								<th class="lg:w-30 md:w-30 h-10 w-10 p-2 text-xs sm:w-20 xl:w-40 xl:text-sm">
+									<span class="text-2xl">Thursday</span>
+								</th>
+								<th class="lg:w-30 md:w-30 h-10 w-10 p-2 text-xs sm:w-20 xl:w-40 xl:text-sm">
+									<span class="text-2xl">Friday</span>
+								</th>
+								<th class="lg:w-30 md:w-30 h-10 w-10 p-2 text-xs sm:w-20 xl:w-40 xl:text-sm">
+									<span class="text-2xl">Saturday</span>
+								</th>
+								<th class="lg:w-30 md:w-30 h-10 w-10 p-2 text-xs sm:w-20 xl:w-40 xl:text-sm">
+									<span class="text-2xl">Sunday</span>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="h-20 text-center">
+								<td class="lg:w-30 md:w-30 h-40 w-10 overflow-auto border p-1 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="text-lg">
+											<p>1</p>
+											<p class="mt-10 day1"></p>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="text-lg">
+											<p>2</p>
+											<p class="mt-10 day2"></p>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="text-lg">
+											<p>3</p>
+											<p class="mt-10 day3"></p>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>4</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>6</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-hidden border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>7</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>8</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+
+							<!--         line 1 -->
+							<tr class="h-20 text-center">
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>9</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>10</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>11</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>12</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>13</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>14</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>15</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<!--         line 1 -->
+
+							<!--         line 2 -->
+							<tr class="h-20 text-center">
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>16</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>17</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>18</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>19</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>20</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>21</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>22</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<!--         line 2 -->
+
+							<!--         line 3 -->
+							<tr class="h-20 text-center">
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>23</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>24</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>25</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>26</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>27</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>28</span>
+										</div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>29</span>
+										</div>
+									</div>
+								</td>
+							</tr>
+
+							<!--         line 4 -->
+							<tr class="h-20 text-center">
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>30</span>
+										</div>
+										<div class="bottom h-30 w-full flex-grow py-1"></div>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 ease h-40 w-10 overflow-auto border p-1 transition duration-500 sm:w-20 xl:w-40">
+									<div class="lg:w-30 md:w-30 mx-auto flex h-40 w-10 flex-col overflow-hidden sm:w-full xl:w-40">
+										<div class="top h-5 w-full">
+											<span>31</span>
+										</div>
+										<div class="bottom h-30 w-full flex-grow py-1"></div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 
@@ -100,10 +366,10 @@
 						<p class="text-lg">Start Screentime on the tray after your computer started.</p>
 					</div>
 					<div>
-						<div class="mx-auto mt-4 flex w-52 items-center justify-center rounded-full bg-white py-[18px]">
+						<div class="mx-auto mt-4 flex w-52 items-center justify-center rounded-full bg-white py-[18px] hover:text-black">
 							<div class="relative mr-2 inline-block w-12 select-none rounded-full border-2 border-gray-900 bg-gray-900 align-middle">
-								<input checked onclick="settings.changeStartup()" id="startupToggle" type="checkbox" class="toggle absolute right-6 top-1 block h-4 w-4 cursor-pointer appearance-none rounded-full bg-black outline-none duration-200 ease-in checked:bg-white focus:outline-none" />
-								<label for="startupToggle" class="toggle-bg block h-6 cursor-pointer overflow-hidden rounded-full bg-white"></label>
+								<input checked onclick="settings.changeStartup()" id="startupToggle" type="checkbox" class="toggle absolute right-6 top-1 block h-4 w-4 cursor-pointer appearance-none rounded-full bg-black outline-none duration-200 ease-in checked:bg-white hover:text-black focus:outline-none" />
+								<label for="startupToggle" class="toggle-bg block h-6 cursor-pointer overflow-hidden rounded-full bg-white" hover:text-black></label>
 							</div>
 							<span id="startupLabel" class="text-xl text-black">On</span>
 						</div>

@@ -112,6 +112,34 @@ const weeklyChart = () => {
 	})
 }
 
+const updateCalendar = () => {
+	const date = getDate()
+
+	const arr: LibStatistic[] = storage.statistics[year]
+	const dataset: LibStatistic[] = []
+
+	for (let i = 0; i < arr.length; i++) {
+		if (arr[i].date.month === date.month) {
+			dataset.push(arr[i])
+		}
+	}
+
+	for (let i = 0; i < dataset.length; i++) {
+		const stats = dataset[i]
+		let day = dataset[i].date.day[1]
+
+		if (day.startsWith("0")) {
+			day = day[1]
+		}
+
+		const element = document.querySelector(`.day${day}`)
+
+		element.textContent = `${stats.hours} hours and ${stats.minutes} minutes`
+	}
+
+	console.log(dataset)
+}
+
 const updateChart = () => {
 	chart.destroy()
 	weeklyChart()
@@ -221,6 +249,7 @@ const updateStatistics = () => {
 
 	setStatistics()
 	updateChart()
+	updateCalendar()
 }
 
 /**
@@ -234,3 +263,4 @@ weeklyChart()
 updateStatistics()
 settings.setupSettings(settingsFile)
 buildNumber()
+updateCalendar()
