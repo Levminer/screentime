@@ -1,7 +1,7 @@
 {
 	"name": "screentime",
 	"productName": "Screentime",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Track how much time you spend on your computer.",
 	"author": "Levminer",
 	"license": "GPL-3.0",
