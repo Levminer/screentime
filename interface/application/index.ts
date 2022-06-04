@@ -113,7 +113,6 @@ const weeklyChart = () => {
 }
 
 const updateCalendar = () => {
-	const weeks: string[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 	const date = getDate()
 
 	const arr: LibStatistic[] = storage.statistics[year]
@@ -126,31 +125,22 @@ const updateCalendar = () => {
 	}
 
 	// adjust calendar
-	let counter = 0
-	let negativeCounter = 0
+	const month = dataset[0].date
 
 	for (let i = 1; i < 8; i++) {
-		let firstDay = dataset[0].date.id + counter
+		const date = new Date(`${month.year}-${month.month}-${i}`)
 
-		if (firstDay > 6) {
-			firstDay = negativeCounter
-
-			negativeCounter++
-		}
+		const name = date.toLocaleString("en", { weekday: "long" })
 
 		const element = document.querySelector(`.week${i}`)
 
-		element.textContent = weeks[firstDay]
-
-		counter++
-
-		console.log(weeks[firstDay], counter, firstDay)
+		element.textContent = name
 	}
 
 	// assign days
 	for (let i = 0; i < dataset.length; i++) {
 		const stats = dataset[i]
-		let day = dataset[i].date.day[1]
+		let day = dataset[i].date.day
 
 		if (day.startsWith("0")) {
 			day = day[1]
@@ -160,8 +150,6 @@ const updateCalendar = () => {
 
 		element.textContent = `${stats.hours} hours and ${stats.minutes} minutes`
 	}
-
-	console.log(dataset)
 }
 
 const updateChart = () => {
