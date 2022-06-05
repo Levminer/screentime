@@ -137,6 +137,20 @@ const updateCalendar = () => {
 		element.textContent = name
 	}
 
+	// remove days
+	const useDate = new Date(`${month.year}-${month.month}-1`)
+
+	const daysInMonth = new Date(useDate.getFullYear(), useDate.getMonth() + 1, 0).getDate()
+
+	let counter = 31
+	for (let i = 0; i < 31 - daysInMonth; i++) {
+		const element = document.querySelector(`#day${counter}Container`)
+
+		element.style.display = "none"
+
+		counter--
+	}
+
 	// assign days
 	for (let i = 0; i < dataset.length; i++) {
 		const stats = dataset[i]
