@@ -13,6 +13,7 @@ let minutes: number = 0
 let hours: number = 0
 let chart: Chart
 const { year } = getDate()
+let statisticsUpdater: NodeJS.Timeout
 
 /**
  * Check if running in development
@@ -279,9 +280,22 @@ const updateStatistics = () => {
 }
 
 /**
+ * Pause/resume updating statistics
+ */
+export const stopStatisticsUpdater = () => {
+	clearInterval(statisticsUpdater)
+}
+
+export const startStatisticsUpdater = () => {
+	statisticsUpdater = setInterval(() => {
+		updateStatistics()
+	}, 60000)
+}
+
+/**
  * Save minutes and hours
  */
-setInterval(() => {
+statisticsUpdater = setInterval(() => {
 	updateStatistics()
 }, 60000)
 

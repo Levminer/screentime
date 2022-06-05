@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, globalShortcut, Tray } from "electron"
+import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, globalShortcut, Tray, powerMonitor as power } from "electron"
 import { enable, initialize } from "@electron/remote/main"
 import { date, number } from "../build.json"
 import AutoLaunch = require("auto-launch")
@@ -191,6 +191,14 @@ const createWindow = () => {
 
 			toggleMainWindow()
 		}
+	})
+
+	power.on("lock-screen", () => {
+		mainWindow.webContents.executeJavaScript("stopStatisticsUpdater()")
+	})
+
+	power.on("unlock-screen", () => {
+		mainWindow.webContents.executeJavaScript("startStatisticsUpdater()")
 	})
 
 	globalShortcut.register("CommandOrControl+Shift+t", () => {
