@@ -13,6 +13,7 @@ let minutes: number = 0
 let hours: number = 0
 let chart: Chart
 const { year } = getDate()
+let statisticsUpdater: NodeJS.Timeout
 
 /**
  * Check if running in development
@@ -112,6 +113,60 @@ const weeklyChart = () => {
 	})
 }
 
+const updateCalendar = () => {
+	const date = getDate()
+
+	const arr: LibStatistic[] = storage.statistics[year]
+	const dataset: LibStatistic[] = []
+
+	for (let i = 0; i < arr.length; i++) {
+		if (arr[i].date.month === date.month) {
+			dataset.push(arr[i])
+		}
+	}
+
+	// adjust calendar
+	const month = dataset[0].date
+
+	for (let i = 1; i < 8; i++) {
+		const date = new Date(`${month.year}-${month.month}-${i}`)
+
+		const name = date.toLocaleString("en", { weekday: "long" })
+
+		const element = document.querySelector(`.week${i}`)
+
+		element.textContent = name
+	}
+
+	// remove days
+	const useDate = new Date(`${month.year}-${month.month}-1`)
+
+	const daysInMonth = new Date(useDate.getFullYear(), useDate.getMonth() + 1, 0).getDate()
+
+	let counter = 31
+	for (let i = 0; i < 31 - daysInMonth; i++) {
+		const element = document.querySelector(`#day${counter}Container`)
+
+		element.style.display = "none"
+
+		counter--
+	}
+
+	// assign days
+	for (let i = 0; i < dataset.length; i++) {
+		const stats = dataset[i]
+		let day = dataset[i].date.day
+
+		if (day.startsWith("0")) {
+			day = day[1]
+		}
+
+		const element = document.querySelector(`.day${day}`)
+
+		element.textContent = `${stats.hours} hours and ${stats.minutes} minutes`
+	}
+}
+
 const updateChart = () => {
 	chart.destroy()
 	weeklyChart()
@@ -180,11 +235,33 @@ const buildNumber = async () => {
 	if (info.buildNumber.startsWith("alpha")) {
 		document.querySelector(".buildContent").textContent = `You are running an alpha version of Screentime - Version ${info.appVersion} - Build ${info.buildNumber}`
 		document.querySelector(".build").style.display = "block"
-	} else if (info.buildNumber.startsWith("release")) {
-		document.querySelector(".buildContent").textContent = `You are running a pre release version of Screentime - Version ${info.appVersion} - Build ${info.buildNumber}`
-		document.querySelector(".build").style.display = "block"
 	}
 }
+
+/**
+ * Auto update
+ */
+export const releaseNotes = () => {
+	ipc.invoke("releaseNotes")
+}
+
+export const updateDownloaded = () => {
+	document.querySelector(".updateText").textContent = "Update downloaded"
+	document.querySelector(".updateRestart").style.display = "flex"
+	document.querySelector(".updateClose").style.display = "flex"
+}
+
+export const updateRestart = () => {
+	ipc.invoke("updateRestart")
+}
+
+export const updateAvailable = () => {
+	document.querySelector(".autoUpdate").style.display = "block"
+}
+
+ipc.on("updateInfo", (event, info) => {
+	document.querySelector(".updateText").textContent = `Downloading update: ${info.download_percent}% - ${info.download_speed}MB/s (${info.download_transferred}MB/${info.download_total}MB)`
+})
 
 /**
  * Update statistics
@@ -221,12 +298,26 @@ const updateStatistics = () => {
 
 	setStatistics()
 	updateChart()
+	updateCalendar()
+}
+
+/**
+ * Pause/resume updating statistics
+ */
+export const stopStatisticsUpdater = () => {
+	clearInterval(statisticsUpdater)
+}
+
+export const startStatisticsUpdater = () => {
+	statisticsUpdater = setInterval(() => {
+		updateStatistics()
+	}, 60000)
 }
 
 /**
  * Save minutes and hours
  */
-setInterval(() => {
+statisticsUpdater = setInterval(() => {
 	updateStatistics()
 }, 60000)
 
@@ -234,3 +325,4 @@ weeklyChart()
 updateStatistics()
 settings.setupSettings(settingsFile)
 buildNumber()
+updateCalendar()

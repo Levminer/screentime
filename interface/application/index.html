@@ -17,7 +17,7 @@
 	</head>
 	<body>
 		<!-- build number -->
-		<div class="build sticky top-0 z-10 hidden w-full bg-black font-bold text-white">
+		<div class="build sticky top-0 z-10 hidden w-full bg-black font-bold text-white" hover:text-black>
 			<div class="container mx-auto flex flex-row items-center justify-center py-2">
 				<div class="flex">
 					<h5 class="buildContent m-0 mx-3 flex flex-row text-center font-bold">You are running a pre release version of Authme!</h5>
@@ -25,8 +25,40 @@
 			</div>
 		</div>
 
+		<div class="bg-popup-blue autoUpdate hidden w-full">
+			<div class="container mx-auto flex items-center justify-between px-6 py-4">
+				<div class="flex items-center justify-center gap-3">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z" />
+					</svg>
+
+					<p class="updateText mx-1 text-lg font-bold">New Authme version available. Starting the update...</p>
+
+					<button type="button" onclick="updateRestart()" class="updateRestart button hidden w-auto px-5 py-1 text-lg font-bold">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+						</svg>
+						<span data-loc>Restart</span>
+					</button>
+
+					<button type="button" onclick="releaseNotes()" class="button w-auto px-5 py-1 text-lg font-bold">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+						</svg>
+						<span data-loc>Release notes</span>
+					</button>
+				</div>
+
+				<button class="updateClose hidden transform duration-200 hover:text-black" onclick="this.parentElement.style.display='none'">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+					</svg>
+				</button>
+			</div>
+		</div>
+
 		<!-- page -->
-		<div class="glass mx-auto my-20 flex h-screen w-4/5 flex-col rounded-xl shadow-2xl shadow-gray-800">
+		<div class="glass mx-auto my-20 flex w-4/5 flex-col rounded-xl shadow-2xl shadow-gray-800">
 			<div class="flex w-full flex-row items-center justify-between">
 				<h1>Screentime</h1>
 
@@ -46,7 +78,7 @@
 				</div>
 			</div>
 
-			<div class="blackGlass flex">
+			<div class="blackGlass m-5 flex">
 				<div class="w-3/5 border-r-2 border-gray-500">
 					<h2 class="border-b-2 uppercase">Week</h2>
 					<canvas id="weeklyChart"></canvas>
@@ -72,9 +104,231 @@
 					</div>
 				</div>
 			</div>
-			<div class="w-full">
-				<h2 class="border-b-2 uppercase">Month</h2>
-				<h3>COMING SOON!</h3>
+			<div class="mb-20 w-full">
+				<h2 class="mb-16 border-b-2 uppercase">Month</h2>
+
+				<div class="md:p-0 xl:p-5">
+					<table class="w-full border-4 border-white">
+						<thead class="border-4 border-white text-2xl">
+							<tr>
+								<th class="border-2"><p class="week1 text-2xl">Monday</p></th>
+								<th class="border-2"><p class="week2 text-2xl">Tuesday</p></th>
+								<th class="border-2"><p class="week3 text-2xl">Wednesday</p></th>
+								<th class="border-2"><p class="week4 text-2xl">Thursday</p></th>
+								<th class="border-2"><p class="week5 text-2xl">Friday</p></th>
+								<th class="border-2"><p class="week6 text-2xl">Saturday</p></th>
+								<th class="border-2"><p class="week7 text-2xl">Sunday</p></th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- 1st week -->
+							<tr class="text-center text-lg">
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">1</p>
+										<p class="day1 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">2</p>
+										<p class="day2 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">3</p>
+										<p class="day3 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">4</p>
+										<p class="day4 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">5</p>
+										<p class="day5 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">6</p>
+										<p class="day6 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">7</p>
+										<p class="day7 mt-10"></p>
+									</div>
+								</td>
+							</tr>
+
+							<!-- 2nd week -->
+							<tr class="text-center text-lg">
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">8</p>
+										<p class="day8 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">9</p>
+										<p class="day9 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">10</p>
+										<p class="day10 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">11</p>
+										<p class="day11 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">12</p>
+										<p class="day12 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">13</p>
+										<p class="day13 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">14</p>
+										<p class="day14 mt-10"></p>
+									</div>
+								</td>
+							</tr>
+
+							<!-- 3rd week -->
+							<tr class="text-center text-lg">
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">15</p>
+										<p class="day15 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">16</p>
+										<p class="day16 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">17</p>
+										<p class="day17 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">18</p>
+										<p class="day18 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">19</p>
+										<p class="day19 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">20</p>
+										<p class="day20 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">21</p>
+										<p class="day21 mt-10"></p>
+									</div>
+								</td>
+							</tr>
+
+							<!-- 4th week -->
+							<tr class="text-center text-lg">
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">22</p>
+										<p class="day22 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">23</p>
+										<p class="day23 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">24</p>
+										<p class="day24 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">25</p>
+										<p class="day25 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">26</p>
+										<p class="day26 mt-10"></p>
+									</div>
+								</td>
+								<td class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">27</p>
+										<p class="day27 mt-10"></p>
+									</div>
+								</td>
+								<td id="day28Container" class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">28</p>
+										<p class="day28 mt-10"></p>
+									</div>
+								</td>
+							</tr>
+
+							<!-- 5th week -->
+							<tr class="text-center text-lg">
+								<td id="day29Container" class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">29</p>
+										<p class="day29 mt-10"></p>
+									</div>
+								</td>
+								<td id="day30Container" class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">30</p>
+										<p class="day30 mt-10"></p>
+									</div>
+								</td>
+								<td id="day31Container" class="lg:w-30 md:w-30 h-40 w-10 border p-1 sm:w-20 xl:w-40">
+									<div class="mx-auto flex h-40 flex-col">
+										<p class="font-medium">31</p>
+										<p class="day31 mt-10"></p>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 
@@ -100,10 +354,10 @@
 						<p class="text-lg">Start Screentime on the tray after your computer started.</p>
 					</div>
 					<div>
-						<div class="mx-auto mt-4 flex w-52 items-center justify-center rounded-full bg-white py-[18px]">
+						<div class="mx-auto mt-4 flex w-52 items-center justify-center rounded-full bg-white py-[18px] hover:text-black">
 							<div class="relative mr-2 inline-block w-12 select-none rounded-full border-2 border-gray-900 bg-gray-900 align-middle">
-								<input checked onclick="settings.changeStartup()" id="startupToggle" type="checkbox" class="toggle absolute right-6 top-1 block h-4 w-4 cursor-pointer appearance-none rounded-full bg-black outline-none duration-200 ease-in checked:bg-white focus:outline-none" />
-								<label for="startupToggle" class="toggle-bg block h-6 cursor-pointer overflow-hidden rounded-full bg-white"></label>
+								<input checked onclick="settings.changeStartup()" id="startupToggle" type="checkbox" class="toggle absolute right-6 top-1 block h-4 w-4 cursor-pointer appearance-none rounded-full bg-black outline-none duration-200 ease-in checked:bg-white hover:text-black focus:outline-none" />
+								<label for="startupToggle" class="toggle-bg block h-6 cursor-pointer overflow-hidden rounded-full bg-white" hover:text-black></label>
 							</div>
 							<span id="startupLabel" class="text-xl text-black">On</span>
 						</div>

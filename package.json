@@ -1,7 +1,7 @@
 {
 	"name": "screentime",
 	"productName": "Screentime",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Track how much time you spend on your computer.",
 	"author": "Levminer",
 	"license": "GPL-3.0",
@@ -78,26 +78,27 @@
 		"@6c65726f79/custom-titlebar": "^0.9.1",
 		"@electron/remote": "^2.0.8",
 		"auto-launch": "^5.0.5",
-		"chart.js": "^3.7.1",
-		"dayjs": "^1.11.1"
+		"chart.js": "^3.8.0",
+		"dayjs": "^1.11.3",
+		"electron-updater": "^4.6.5"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "^5.21.0",
-		"@typescript-eslint/parser": "^5.21.0",
-		"concurrently": "^7.1.0",
-		"electron": "^18.1.0",
+		"@typescript-eslint/eslint-plugin": "^5.27.1",
+		"@typescript-eslint/parser": "^5.27.1",
+		"concurrently": "^7.2.1",
+		"electron": "^19.0.3",
 		"electron-builder": "^23.0.3",
 		"electron-debug": "^3.2.0",
-		"eslint": "^8.14.0",
+		"eslint": "^8.17.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-config-standard": "^17.0.0-1",
 		"eslint-plugin-node": "^11.1.0",
 		"eslint-plugin-prettier": "^4.0.0",
 		"eslint-plugin-promise": "^6.0.0",
 		"prettier": "^2.6.2",
-		"prettier-plugin-tailwindcss": "^0.1.10",
+		"prettier-plugin-tailwindcss": "^0.1.11",
 		"tailwindcss": "^3.0.24",
-		"typescript": "^4.6.3"
+		"typescript": "^4.7.3"
 	},
 	"engines": {
 		"node": ">=16.0.0"

@@ -27,11 +27,6 @@ module.exports = {
 				"2xl": "30px",
 			},
 
-			screens: {
-				lg: "1400px",
-				md: "200px",
-			},
-
 			stroke: (theme) => ({
 				black: theme("colors.gray.900"),
 			}),
