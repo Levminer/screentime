@@ -235,9 +235,6 @@ const buildNumber = async () => {
 	if (info.buildNumber.startsWith("alpha")) {
 		document.querySelector(".buildContent").textContent = `You are running an alpha version of Screentime - Version ${info.appVersion} - Build ${info.buildNumber}`
 		document.querySelector(".build").style.display = "block"
-	} else if (info.buildNumber.startsWith("release")) {
-		document.querySelector(".buildContent").textContent = `You are running a pre release version of Screentime - Version ${info.appVersion} - Build ${info.buildNumber}`
-		document.querySelector(".build").style.display = "block"
 	}
 }
 

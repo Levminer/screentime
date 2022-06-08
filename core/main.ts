@@ -206,7 +206,9 @@ const createWindow = () => {
 	/**
 	 * Auto update
 	 */
-	autoUpdater.checkForUpdates()
+	if (dev === false) {
+		autoUpdater.checkForUpdates()
+	}
 
 	autoUpdater.on("checking-for-update", () => {
 		console.log("Checking for auto update")
