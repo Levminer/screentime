@@ -242,6 +242,31 @@ const buildNumber = async () => {
 }
 
 /**
+ * Auto update
+ */
+export const releaseNotes = () => {
+	ipc.invoke("releaseNotes")
+}
+
+export const updateDownloaded = () => {
+	document.querySelector(".updateText").textContent = "Update downloaded"
+	document.querySelector(".updateRestart").style.display = "flex"
+	document.querySelector(".updateClose").style.display = "flex"
+}
+
+export const updateRestart = () => {
+	ipc.invoke("updateRestart")
+}
+
+export const updateAvailable = () => {
+	document.querySelector(".autoUpdate").style.display = "block"
+}
+
+ipc.on("updateInfo", (event, info) => {
+	document.querySelector(".updateText").textContent = `Downloading update: ${info.download_percent}% - ${info.download_speed}MB/s (${info.download_transferred}MB/${info.download_total}MB)`
+})
+
+/**
  * Update statistics
  */
 const updateStatistics = () => {

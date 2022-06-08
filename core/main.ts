@@ -1,5 +1,6 @@
 import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, globalShortcut, Tray, powerMonitor as power } from "electron"
 import { enable, initialize } from "@electron/remote/main"
+import { autoUpdater } from "electron-updater"
 import { date, number } from "../build.json"
 import AutoLaunch = require("auto-launch")
 import { join } from "path"
@@ -11,6 +12,7 @@ import { existsSync, mkdirSync, writeFileSync } from "fs"
  */
 let mainWindow: BrowserWindow
 let mainWindowShown = false
+let manualUpdate = false
 
 // Other states
 let tray: Tray
@@ -201,6 +203,82 @@ const createWindow = () => {
 		mainWindow.webContents.executeJavaScript("startStatisticsUpdater()")
 	})
 
+	/**
+	 * Auto update
+	 */
+	autoUpdater.checkForUpdates()
+
+	autoUpdater.on("checking-for-update", () => {
+		console.log("Checking for auto update")
+	})
+
+	autoUpdater.on("update-available", () => {
+		mainWindow.webContents.executeJavaScript("updateAvailable()")
+
+		console.log("Update available")
+	})
+
+	autoUpdater.on("update-not-available", () => {
+		console.log("Update not available")
+
+		if (manualUpdate === true) {
+			dialog.showMessageBox({
+				title: "Authme",
+				buttons: ["Close"],
+				defaultId: 0,
+				cancelId: 1,
+				noLink: true,
+				type: "info",
+				message: "No update available! \n\nYou are on the latest version.",
+			})
+
+			manualUpdate = false
+		}
+	})
+
+	autoUpdater.on("error", (error) => {
+		console.log("Error during auto update", error.stack)
+
+		if (manualUpdate === true) {
+			dialog.showMessageBox({
+				title: "Authme",
+				buttons: ["Close"],
+				defaultId: 0,
+				cancelId: 1,
+				noLink: true,
+				type: "error",
+				message: `Error during auto update! \n\n${error.stack}`,
+			})
+		}
+	})
+
+	autoUpdater.on("download-progress", (progress) => {
+		const downloadPercent = Math.trunc(progress.percent)
+		const downloadSpeed = (Math.round((progress.bytesPerSecond / 1000000) * 10) / 10).toFixed(1)
+		const downloadTransferred = Math.trunc(progress.transferred / 1000000)
+		const downloadTotal = Math.trunc(progress.total / 1000000)
+
+		console.log(`Downloading update: ${downloadPercent}% - ${downloadSpeed}MB/s (${downloadTransferred}MB/${downloadTotal}MB)`)
+
+		mainWindow.webContents.send("updateInfo", {
+			download_percent: downloadPercent,
+			download_speed: downloadSpeed,
+			download_transferred: downloadTransferred,
+			download_total: downloadTotal,
+		})
+	})
+
+	autoUpdater.on("update-downloaded", () => {
+		console.log("Update downloaded")
+
+		mainWindow.webContents.executeJavaScript("updateDownloaded()")
+	})
+
+	ipc.handle("updateRestart", () => {
+		autoUpdater.quitAndInstall(true, true)
+	})
+
+	/* Global shortcut */
 	globalShortcut.register("CommandOrControl+Shift+t", () => {
 		toggleMainWindow()
 	})
@@ -298,6 +376,10 @@ ipc.handle("toggleStartup", async () => {
 	}
 
 	saveSettings()
+})
+
+ipc.handle("releaseNotes", () => {
+	shell.openExternal("https://github.com/Levminer/screentime/releases")
 })
 
 /**
@@ -435,6 +517,11 @@ const createMenu = () => {
 				{ type: "separator" },
 				{
 					label: "Update",
+					click: () => {
+						manualUpdate = true
+
+						autoUpdater.checkForUpdates()
+					},
 				},
 				{ type: "separator" },
 				{
