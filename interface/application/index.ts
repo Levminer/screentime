@@ -84,7 +84,7 @@ const weeklyChart = () => {
 				{
 					label: "Minutes",
 					data: dataset,
-					backgroundColor: ["#003f5c", "#374c80", "#7a5195", "#bc5090", "#ef5675", "#ff764a", "#ffa600"],
+					backgroundColor: ["#15446A", "#4A4D86", "#7a5195", "#bc5090", "#ef5675", "#ff764a", "#ffa600"],
 					borderColor: ["gray"],
 				},
 			],
@@ -94,12 +94,12 @@ const weeklyChart = () => {
 				y: {
 					beginAtZero: true,
 					ticks: {
-						color: "gray",
+						color: "#e5e7eb",
 					},
 				},
 				x: {
 					ticks: {
-						color: "gray",
+						color: "#e5e7eb",
 					},
 				},
 			},
