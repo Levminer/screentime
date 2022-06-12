@@ -1,7 +1,7 @@
 {
 	"name": "screentime",
 	"productName": "Screentime",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"description": "Track how much time you spend on your computer.",
 	"author": "Levminer",
 	"license": "GPL-3.0",
@@ -86,7 +86,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.27.1",
 		"@typescript-eslint/parser": "^5.27.1",
 		"concurrently": "^7.2.1",
-		"electron": "^19.0.3",
+		"electron": "^19.0.4",
 		"electron-builder": "^23.0.3",
 		"electron-debug": "^3.2.0",
 		"eslint": "^8.17.0",
@@ -97,7 +97,7 @@
 		"eslint-plugin-promise": "^6.0.0",
 		"prettier": "^2.6.2",
 		"prettier-plugin-tailwindcss": "^0.1.11",
-		"tailwindcss": "^3.0.24",
+		"tailwindcss": "^3.1.2",
 		"typescript": "^4.7.3"
 	},
 	"engines": {
