@@ -1,5 +1,5 @@
 import { Chart } from "chart.js"
-import { getDate } from "../../libraries/date"
+import { getDate, toHoursAndMinutes } from "../../libraries/date"
 import { ipcRenderer as ipc } from "electron"
 import { app } from "@electron/remote"
 import * as settings from "./functions/settings"
@@ -69,7 +69,9 @@ const weeklyChart = () => {
 
 	for (let i = 0; i < arr.length; i++) {
 		if (arr[i].date.week === date.week) {
-			dataset[arr[i].date.id] = arr[i].hours * 60 + arr[i].minutes
+			const float = parseFloat(`${arr[i].hours}.${arr[i].minutes}`)
+
+			dataset[arr[i].date.id] = parseFloat(float.toFixed(1))
 		}
 	}
 
@@ -82,7 +84,7 @@ const weeklyChart = () => {
 			labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
 			datasets: [
 				{
-					label: "Minutes",
+					label: "Hours",
 					data: dataset,
 					backgroundColor: ["#15446A", "#4A4D86", "#7a5195", "#bc5090", "#ef5675", "#ff764a", "#ffa600"],
 					borderColor: ["gray"],
@@ -106,7 +108,6 @@ const weeklyChart = () => {
 			plugins: {
 				legend: {
 					display: false,
-					labels: {},
 				},
 			},
 		},
@@ -196,7 +197,7 @@ const setStatistics = () => {
 	if (hours === 0) {
 		today = `Today you spent ${minutes} minutes`
 	} else {
-		today = `${hours} hours and ${minutes} minutes`
+		today = `Today you spent ${hours} hours and ${minutes} minutes`
 	}
 
 	document.querySelector(".todayUsage").textContent = today
@@ -213,7 +214,7 @@ const setStatistics = () => {
 
 	const avg = Math.round(time / counter).toString()
 
-	document.querySelector(".avgUsage").textContent = `You spend about ${avg} minutes daily`
+	document.querySelector(".avgUsage").textContent = `Your average is ${toHoursAndMinutes(avg)}`
 
 	// Global average
 	let globalAvg: string
@@ -221,9 +222,9 @@ const setStatistics = () => {
 	const todayAllAvg = hours * 60 + minutes
 
 	if (todayAllAvg > globalUserAvg) {
-		globalAvg = `You spent ${todayAllAvg - globalUserAvg} minutes more than an average user`
+		globalAvg = `You spend ${toHoursAndMinutes(todayAllAvg - globalUserAvg)} more than an average user`
 	} else {
-		globalAvg = `You spent ${globalUserAvg - todayAllAvg} minutes less than an average user`
+		globalAvg = `You spend ${toHoursAndMinutes(globalUserAvg - todayAllAvg)} less than an average user`
 	}
 
 	document.querySelector(".globalAvgUsage").textContent = globalAvg
