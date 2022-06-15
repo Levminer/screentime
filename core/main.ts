@@ -281,7 +281,7 @@ const createWindow = () => {
 	})
 
 	/* Global shortcut */
-	globalShortcut.register("CommandOrControl+Shift+t", () => {
+	globalShortcut.register("CommandOrControl+Shift+s", () => {
 		toggleMainWindow()
 	})
 }
@@ -391,7 +391,7 @@ const createTray = () => {
 	const contextmenu = Menu.buildFromTemplate([
 		{
 			label: mainWindowShown ? "Hide app" : "Show app",
-			accelerator: "CommandOrControl+Shift+t",
+			accelerator: "CommandOrControl+Shift+s",
 			click: () => {
 				toggleMainWindow()
 			},
