@@ -2,7 +2,7 @@
 
 -   Track how much time you spend on your computer.
 
-[![Downloads](https://img.shields.io/github/downloads/levminer/authme/total?label=Downloads)](https://github.com/Levminer/screentime/releases)
+[![Downloads](https://img.shields.io/github/downloads/levminer/screentime/total?label=Downloads)](https://github.com/Levminer/screentime/releases)
 [![Support](https://img.shields.io/badge/Support-PayPal-blue)](https://paypal.me/levminer)
 [![License](https://img.shields.io/github/license/levminer/screentime?label=License)](https://github.com/Levminer/screentime/blob/main/LICENSE.md)
 
