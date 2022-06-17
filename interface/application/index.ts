@@ -69,9 +69,9 @@ const weeklyChart = () => {
 
 	for (let i = 0; i < arr.length; i++) {
 		if (arr[i].date.week === date.week) {
-			const float = parseFloat(`${arr[i].hours}.${arr[i].minutes}`)
+			const totalHours = Math.round(((arr[i].hours * 60 + arr[i].minutes) / 60) * 100) / 100
 
-			dataset[arr[i].date.id] = parseFloat(float.toFixed(1))
+			dataset[arr[i].date.id] = totalHours
 		}
 	}
 
