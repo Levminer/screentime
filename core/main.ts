@@ -159,7 +159,7 @@ const createWindow = () => {
 			: null,
 		backgroundColor: "#0A0A0A",
 		webPreferences: {
-			preload: join(__dirname, "../interface/preload/preload.js"),
+			preload: join(__dirname, "./preload/preload.js"),
 			nodeIntegration: true,
 			contextIsolation: false,
 		},
@@ -170,6 +170,7 @@ const createWindow = () => {
 	enable(mainWindow.webContents)
 	mainWindow.loadFile(join(__dirname, "../interface/application/index.html"))
 
+	/* Main window events */
 	mainWindow.on("ready-to-show", () => {
 		if (args[1] !== "--hidden") {
 			mainWindow.maximize()
