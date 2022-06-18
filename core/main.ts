@@ -391,7 +391,7 @@ ipc.handle("releaseNotes", () => {
 const createTray = () => {
 	const contextmenu = Menu.buildFromTemplate([
 		{
-			label: mainWindowShown ? "Hide app" : "Show app",
+			label: mainWindowShown ? "Hide Screentime" : "Show Screentime",
 			accelerator: "CommandOrControl+Shift+s",
 			click: () => {
 				toggleMainWindow()
@@ -407,7 +407,7 @@ const createTray = () => {
 		},
 		{ type: "separator" },
 		{
-			label: "Exit",
+			label: "Exit Screentime",
 			click: () => {
 				app.exit()
 			},
@@ -426,7 +426,7 @@ const createMenu = () => {
 			label: "File",
 			submenu: [
 				{
-					label: mainWindowShown ? "Show app" : "Hide app",
+					label: mainWindowShown ? "Show Screentime" : "Hide Screentime",
 					click: () => {
 						toggleMainWindow()
 					},
@@ -441,7 +441,7 @@ const createMenu = () => {
 				},
 				{ type: "separator" },
 				{
-					label: "Exit",
+					label: "Exit Screentime",
 					accelerator: "CommandOrControl+w",
 					click: () => {
 						app.exit()
