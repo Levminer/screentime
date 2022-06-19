@@ -164,7 +164,11 @@ const updateCalendar = () => {
 
 		const element = document.querySelector(`.day${day}`)
 
-		element.textContent = `${stats.hours} hours and ${stats.minutes} minutes`
+		if (stats.hours === 0) {
+			element.textContent = `${stats.minutes} minutes`
+		} else {
+			element.textContent = `${stats.hours} hours and ${stats.minutes} minutes`
+		}
 	}
 }
 
@@ -228,6 +232,46 @@ const setStatistics = () => {
 	}
 
 	document.querySelector(".globalAvgUsage").textContent = globalAvg
+}
+
+const yearlyStats = () => {
+	const arr: LibStatistic[] = storage.statistics[year]
+
+	// Total screen time
+	let totalMinutes = 0
+
+	for (let i = 0; i < arr.length; i++) {
+		totalMinutes += arr[i].hours * 60
+		totalMinutes += arr[i].minutes
+	}
+
+	document.querySelector(".totalTime").textContent = `Your total screen time is ${toHoursAndMinutes(totalMinutes)}`
+
+	// Max screen time
+	let maxMinutes = arr[0].hours * 60 + arr[0].minutes
+
+	for (let i = 0; i < arr.length; i++) {
+		const currentMinutes = arr[i].hours * 60 + arr[i].minutes
+
+		if (currentMinutes > maxMinutes) {
+			maxMinutes = currentMinutes
+		}
+	}
+
+	document.querySelector(".longestTime").textContent = `Your longest screen time is ${toHoursAndMinutes(maxMinutes)}`
+
+	// Min screen time
+	let minMinutes = arr[0].hours * 60 + arr[0].minutes
+
+	for (let i = 0; i < arr.length; i++) {
+		const currentMinutes = arr[i].hours * 60 + arr[i].minutes
+
+		if (currentMinutes < minMinutes) {
+			minMinutes = currentMinutes
+		}
+	}
+
+	document.querySelector(".lowestTime").textContent = `Your shortest screen time is ${toHoursAndMinutes(minMinutes)}`
 }
 
 const buildNumber = async () => {
@@ -300,6 +344,7 @@ const updateStatistics = () => {
 	setStatistics()
 	updateChart()
 	updateCalendar()
+	yearlyStats()
 }
 
 /**
@@ -327,3 +372,4 @@ updateStatistics()
 settings.setupSettings(settingsFile)
 buildNumber()
 updateCalendar()
+yearlyStats()
