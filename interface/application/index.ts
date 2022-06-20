@@ -11,7 +11,8 @@ import { readFileSync } from "fs"
  */
 let minutes: number = 0
 let hours: number = 0
-let chart: Chart
+let weekChart: Chart
+let monthChart: Chart
 const { year } = getDate()
 let statisticsUpdater: NodeJS.Timeout
 
@@ -78,7 +79,7 @@ const weeklyChart = () => {
 	// @ts-ignore
 	const ctx = document.getElementById("weeklyChart").getContext("2d")
 
-	chart = new Chart(ctx, {
+	weekChart = new Chart(ctx, {
 		type: "bar",
 		data: {
 			labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
@@ -105,6 +106,43 @@ const weeklyChart = () => {
 					},
 				},
 			},
+			plugins: {
+				legend: {
+					display: false,
+				},
+			},
+		},
+	})
+}
+
+const monthlyChart = () => {
+	const arr: LibStatistic[] = storage.statistics[year]
+	const dataset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+	for (let i = 0; i < arr.length; i++) {
+		const currentDate = arr[i]
+
+		const id = new Date(`${currentDate.date.year}-${currentDate.date.month}-1`).getMonth()
+
+		dataset[id] += Math.round(((arr[i].hours * 60 + arr[i].minutes) / 60) * 100) / 100
+	}
+
+	// @ts-ignore
+	const ctx = document.getElementById("monthlyChart").getContext("2d")
+
+	monthChart = new Chart(ctx, {
+		type: "pie",
+		data: {
+			labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+			datasets: [
+				{
+					label: "Hours",
+					data: dataset,
+					backgroundColor: ["#15446A", "#4A4D86", "#7a5195", "#bc5090", "#ef5675", "#ff764a", "#ffa600"],
+				},
+			],
+		},
+		options: {
 			plugins: {
 				legend: {
 					display: false,
@@ -172,8 +210,11 @@ const updateCalendar = () => {
 	}
 }
 
-const updateChart = () => {
-	chart.destroy()
+const updateCharts = () => {
+	monthChart.destroy()
+	monthlyChart()
+
+	weekChart.destroy()
 	weeklyChart()
 }
 
@@ -342,7 +383,7 @@ const updateStatistics = () => {
 	localStorage.setItem("storage", JSON.stringify(storage))
 
 	setStatistics()
-	updateChart()
+	updateCharts()
 	updateCalendar()
 	yearlyStats()
 }
@@ -368,6 +409,7 @@ statisticsUpdater = setInterval(() => {
 }, 60000)
 
 weeklyChart()
+monthlyChart()
 updateStatistics()
 settings.setupSettings(settingsFile)
 buildNumber()
