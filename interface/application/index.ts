@@ -69,10 +69,10 @@ const weeklyChart = () => {
 	const dataset = [0, 0, 0, 0, 0, 0, 0]
 
 	for (let i = 0; i < arr.length; i++) {
-		if (arr[i].date.week === date.week) {
+		if (arr[i].date.weekID === date.weekID) {
 			const totalHours = Math.round(((arr[i].hours * 60 + arr[i].minutes) / 60) * 100) / 100
 
-			dataset[arr[i].date.id] = totalHours
+			dataset[arr[i].date.dayID] = totalHours
 		}
 	}
 
@@ -120,11 +120,7 @@ const monthlyChart = () => {
 	const dataset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 	for (let i = 0; i < arr.length; i++) {
-		const currentDate = arr[i]
-
-		const id = new Date(`${currentDate.date.year}-${currentDate.date.month}-1`).getMonth()
-
-		dataset[id] += Math.round(((arr[i].hours * 60 + arr[i].minutes) / 60) * 100) / 100
+		dataset[arr[i].date.monthID] += Math.round(((arr[i].hours * 60 + arr[i].minutes) / 60) * 100) / 100
 	}
 
 	// @ts-ignore
@@ -153,40 +149,30 @@ const monthlyChart = () => {
 }
 
 const updateCalendar = () => {
-	const date = getDate()
+	const currentDate = getDate()
 
 	const arr: LibStatistic[] = storage.statistics[year]
 	const dataset: LibStatistic[] = []
 
 	for (let i = 0; i < arr.length; i++) {
-		if (arr[i].date.month === date.month) {
+		if (arr[i].date.monthID === currentDate.monthID) {
 			dataset.push(arr[i])
 		}
 	}
 
 	// adjust calendar
-	const month = dataset[0].date
-
 	for (let i = 1; i < 8; i++) {
-		const date = new Date(`${month.year}-${month.month}-${i}`)
+		const name = currentDate.date.toLocaleString("en", { weekday: "long" })
 
-		const name = date.toLocaleString("en", { weekday: "long" })
-
-		const element = document.querySelector(`.week${i}`)
-
-		element.textContent = name
+		document.querySelector(`.week${i}`).textContent = name
 	}
 
 	// remove days
-	const useDate = new Date(`${month.year}-${month.month}-1`)
-
-	const daysInMonth = new Date(useDate.getFullYear(), useDate.getMonth() + 1, 0).getDate()
+	const daysInMonth = new Date(currentDate.date.getFullYear(), currentDate.date.getMonth() + 1, 0).getDate()
 
 	let counter = 31
 	for (let i = 0; i < 31 - daysInMonth; i++) {
-		const element = document.querySelector(`#day${counter}Container`)
-
-		element.style.display = "none"
+		document.querySelector(`#day${counter}Container`).style.display = "none"
 
 		counter--
 	}
@@ -237,15 +223,9 @@ const setStatistics = () => {
 	hours = obj.hours
 
 	// Todays screen time
-	let today: string
+	const totalMinutes = hours * 60 + minutes
 
-	if (hours === 0) {
-		today = `Today you spent ${minutes} minutes`
-	} else {
-		today = `Today you spent ${hours} hours and ${minutes} minutes`
-	}
-
-	document.querySelector(".todayUsage").textContent = today
+	document.querySelector(".todayUsage").textContent = `Today you spent ${toHoursAndMinutes(totalMinutes)}`
 
 	// Average screen time
 	const arr: LibStatistic[] = storage.statistics[year]
