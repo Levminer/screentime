@@ -104,7 +104,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="mb-20 w-full">
+			<div class="mb-10 w-full">
 				<h2 class="mb-16 border-b-2 uppercase">Month</h2>
 
 				<div class="blackGlass mx-5 md:p-0 xl:p-5">
@@ -328,6 +328,37 @@
 							</tr>
 						</tbody>
 					</table>
+				</div>
+			</div>
+
+			<div class="mb-14 w-full">
+				<h2 class="mb-16 border-b-2 uppercase">Year</h2>
+
+				<div class="blackGlass m-5 flex">
+					<div class="w-3/5 border-r-2">
+						<h2 class="border-b-2 uppercase">This year</h2>
+
+						<div class="flex flex-col justify-between">
+							<div>
+								<h3 class="mb-0">Total screen time</h3>
+								<h4 class="totalTime mt-0 text-gray-200"></h4>
+							</div>
+
+							<div>
+								<h3 class="mb-0">Longest screen time</h3>
+								<h4 class="longestTime mt-0 text-gray-200"></h4>
+							</div>
+
+							<div>
+								<h3 class="mb-0">Shortest screen time</h3>
+								<h4 class="lowestTime mt-0 text-gray-200"></h4>
+							</div>
+						</div>
+					</div>
+					<div class="w-3/5">
+						<h2 class="border-b-2 uppercase">Months</h2>
+						<canvas id="monthlyChart"></canvas>
+					</div>
 				</div>
 			</div>
 		</div>

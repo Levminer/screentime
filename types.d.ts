@@ -7,9 +7,11 @@ declare global {
 		month: string
 		day: string
 		fullDate: string
+		date: Date
 		name: string
-		week: number
-		id: number
+		weekID: number
+		dayID: number
+		monthID: number
 	}
 
 	interface LibStatistic {

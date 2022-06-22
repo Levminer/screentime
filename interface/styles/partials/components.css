@@ -34,3 +34,9 @@ dialog[open] {
 	backdrop-filter: blur(20px);
 	border-radius: 10px;
 }
+
+#monthlyChart {
+	margin: 1rem auto;
+	width: 400px !important;
+	height: 400px !important;
+}

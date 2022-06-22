@@ -159,7 +159,7 @@ const createWindow = () => {
 			: null,
 		backgroundColor: "#0A0A0A",
 		webPreferences: {
-			preload: join(__dirname, "../interface/preload/preload.js"),
+			preload: join(__dirname, "./preload/preload.js"),
 			nodeIntegration: true,
 			contextIsolation: false,
 		},
@@ -170,6 +170,7 @@ const createWindow = () => {
 	enable(mainWindow.webContents)
 	mainWindow.loadFile(join(__dirname, "../interface/application/index.html"))
 
+	/* Main window events */
 	mainWindow.on("ready-to-show", () => {
 		if (args[1] !== "--hidden") {
 			mainWindow.maximize()
@@ -181,8 +182,6 @@ const createWindow = () => {
 		}
 
 		if (firstStart === true && dev === false) {
-			saveSettings()
-
 			autoLauncher.enable()
 		}
 	})
@@ -390,7 +389,7 @@ ipc.handle("releaseNotes", () => {
 const createTray = () => {
 	const contextmenu = Menu.buildFromTemplate([
 		{
-			label: mainWindowShown ? "Hide app" : "Show app",
+			label: mainWindowShown ? "Hide Screentime" : "Show Screentime",
 			accelerator: "CommandOrControl+Shift+s",
 			click: () => {
 				toggleMainWindow()
@@ -406,7 +405,7 @@ const createTray = () => {
 		},
 		{ type: "separator" },
 		{
-			label: "Exit",
+			label: "Exit Screentime",
 			click: () => {
 				app.exit()
 			},
@@ -425,7 +424,7 @@ const createMenu = () => {
 			label: "File",
 			submenu: [
 				{
-					label: mainWindowShown ? "Show app" : "Hide app",
+					label: mainWindowShown ? "Show Screentime" : "Hide Screentime",
 					click: () => {
 						toggleMainWindow()
 					},
@@ -440,7 +439,7 @@ const createMenu = () => {
 				},
 				{ type: "separator" },
 				{
-					label: "Exit",
+					label: "Exit Screentime",
 					accelerator: "CommandOrControl+w",
 					click: () => {
 						app.exit()
