@@ -62,31 +62,34 @@ if (storage === null) {
 /**
  * Create weekly chart
  */
-const weeklyChart = () => {
-	const date = getDate()
+const createCharts = () => {
+	const currentDate = getDate()
+	const days: LibStatistic[] = storage.statistics[year]
 
-	const arr: LibStatistic[] = storage.statistics[year]
-	const dataset = [0, 0, 0, 0, 0, 0, 0]
+	// Weekly chart
+	const weekDataset = [0, 0, 0, 0, 0, 0, 0]
 
-	for (let i = 0; i < arr.length; i++) {
-		if (arr[i].date.weekID === date.weekID) {
-			const totalHours = Math.round(((arr[i].hours * 60 + arr[i].minutes) / 60) * 100) / 100
+	for (let i = 0; i < days.length; i++) {
+		if (days[i].date.weekID === currentDate.weekID) {
+			const totalHours = Math.round(((days[i].hours * 60 + days[i].minutes) / 60) * 100) / 100
 
-			dataset[arr[i].date.dayID] = totalHours
+			weekDataset[days[i].date.dayID] = totalHours
 		}
 	}
 
-	// @ts-ignore
-	const ctx = document.getElementById("weeklyChart").getContext("2d")
+	console.log(weekDataset)
 
-	weekChart = new Chart(ctx, {
+	// @ts-ignore
+	const weeklyChart = document.getElementById("weeklyChart").getContext("2d")
+
+	weekChart = new Chart(weeklyChart, {
 		type: "bar",
 		data: {
 			labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
 			datasets: [
 				{
 					label: "Hours",
-					data: dataset,
+					data: weekDataset,
 					backgroundColor: ["#15446A", "#4A4D86", "#7a5195", "#bc5090", "#ef5675", "#ff764a", "#ffa600"],
 					borderColor: ["gray"],
 				},
@@ -113,27 +116,25 @@ const weeklyChart = () => {
 			},
 		},
 	})
-}
 
-const monthlyChart = () => {
-	const arr: LibStatistic[] = storage.statistics[year]
-	const dataset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	// Monthly chart
+	const monthDataset = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-	for (let i = 0; i < arr.length; i++) {
-		dataset[arr[i].date.monthID] += Math.round(((arr[i].hours * 60 + arr[i].minutes) / 60) * 100) / 100
+	for (let i = 0; i < days.length; i++) {
+		monthDataset[days[i].date.monthID] += Math.round(((days[i].hours * 60 + days[i].minutes) / 60) * 100) / 100
 	}
 
 	// @ts-ignore
-	const ctx = document.getElementById("monthlyChart").getContext("2d")
+	const monthlyChart = document.getElementById("monthlyChart").getContext("2d")
 
-	monthChart = new Chart(ctx, {
+	monthChart = new Chart(monthlyChart, {
 		type: "pie",
 		data: {
 			labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 			datasets: [
 				{
 					label: "Hours",
-					data: dataset,
+					data: monthDataset,
 					backgroundColor: ["#15446A", "#4A4D86", "#7a5195", "#bc5090", "#ef5675", "#ff764a", "#ffa600"],
 				},
 			],
@@ -198,10 +199,9 @@ const updateCalendar = () => {
 
 const updateCharts = () => {
 	monthChart.destroy()
-	monthlyChart()
-
 	weekChart.destroy()
-	weeklyChart()
+
+	createCharts()
 }
 
 export const versionDialog = () => {
@@ -218,22 +218,22 @@ ipc.on("toggleSettings", () => {
 const setStatistics = () => {
 	const index = storage.statistics[year].length - 1
 	const obj: LibStatistic = storage.statistics[year][index]
+	const days: LibStatistic[] = storage.statistics[year]
 
 	minutes = obj.minutes
 	hours = obj.hours
 
 	// Todays screen time
-	const totalMinutes = hours * 60 + minutes
+	const todayMinutes = hours * 60 + minutes
 
-	document.querySelector(".todayUsage").textContent = `Today you spent ${toHoursAndMinutes(totalMinutes)}`
+	document.querySelector(".todayUsage").textContent = `Today you spent ${toHoursAndMinutes(todayMinutes)}`
 
 	// Average screen time
-	const arr: LibStatistic[] = storage.statistics[year]
 	let time = 0
 	let counter = 0
 
-	for (let i = 0; i < arr.length; i++) {
-		time += arr[i].hours * 60 + minutes
+	for (let i = 0; i < days.length; i++) {
+		time += days[i].hours * 60 + minutes
 		counter++
 	}
 
@@ -253,26 +253,22 @@ const setStatistics = () => {
 	}
 
 	document.querySelector(".globalAvgUsage").textContent = globalAvg
-}
-
-const yearlyStats = () => {
-	const arr: LibStatistic[] = storage.statistics[year]
 
 	// Total screen time
 	let totalMinutes = 0
 
-	for (let i = 0; i < arr.length; i++) {
-		totalMinutes += arr[i].hours * 60
-		totalMinutes += arr[i].minutes
+	for (let i = 0; i < days.length; i++) {
+		totalMinutes += days[i].hours * 60
+		totalMinutes += days[i].minutes
 	}
 
 	document.querySelector(".totalTime").textContent = `Your total screen time is ${toHoursAndMinutes(totalMinutes)}`
 
 	// Max screen time
-	let maxMinutes = arr[0].hours * 60 + arr[0].minutes
+	let maxMinutes = days[0].hours * 60 + days[0].minutes
 
-	for (let i = 0; i < arr.length; i++) {
-		const currentMinutes = arr[i].hours * 60 + arr[i].minutes
+	for (let i = 0; i < days.length; i++) {
+		const currentMinutes = days[i].hours * 60 + days[i].minutes
 
 		if (currentMinutes > maxMinutes) {
 			maxMinutes = currentMinutes
@@ -282,10 +278,10 @@ const yearlyStats = () => {
 	document.querySelector(".longestTime").textContent = `Your longest screen time is ${toHoursAndMinutes(maxMinutes)}`
 
 	// Min screen time
-	let minMinutes = arr[0].hours * 60 + arr[0].minutes
+	let minMinutes = days[0].hours * 60 + days[0].minutes
 
-	for (let i = 0; i < arr.length; i++) {
-		const currentMinutes = arr[i].hours * 60 + arr[i].minutes
+	for (let i = 0; i < days.length; i++) {
+		const currentMinutes = days[i].hours * 60 + days[i].minutes
 
 		if (currentMinutes < minMinutes) {
 			minMinutes = currentMinutes
@@ -365,7 +361,6 @@ const updateStatistics = () => {
 	setStatistics()
 	updateCharts()
 	updateCalendar()
-	yearlyStats()
 }
 
 /**
@@ -388,10 +383,8 @@ statisticsUpdater = setInterval(() => {
 	updateStatistics()
 }, 60000)
 
-weeklyChart()
-monthlyChart()
+createCharts()
 updateStatistics()
+
 settings.setupSettings(settingsFile)
 buildNumber()
-updateCalendar()
-yearlyStats()

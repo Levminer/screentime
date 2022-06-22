@@ -182,8 +182,6 @@ const createWindow = () => {
 		}
 
 		if (firstStart === true && dev === false) {
-			saveSettings()
-
 			autoLauncher.enable()
 		}
 	})
