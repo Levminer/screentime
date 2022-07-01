@@ -77,8 +77,6 @@ const createCharts = () => {
 		}
 	}
 
-	console.log(weekDataset)
-
 	// @ts-ignore
 	const weeklyChart = document.getElementById("weeklyChart").getContext("2d")
 
@@ -361,6 +359,8 @@ const updateStatistics = () => {
 	setStatistics()
 	updateCharts()
 	updateCalendar()
+
+	console.log(`Statistics updated - ${new Date().toLocaleTimeString()} - ${hours} hours - ${minutes} minutes`)
 }
 
 /**
@@ -368,12 +368,16 @@ const updateStatistics = () => {
  */
 export const stopStatisticsUpdater = () => {
 	clearInterval(statisticsUpdater)
+
+	console.log(`Statistics updater stop - ${new Date().toLocaleTimeString()}`)
 }
 
 export const startStatisticsUpdater = () => {
 	statisticsUpdater = setInterval(() => {
 		updateStatistics()
 	}, 60000)
+
+	console.log(`Statistics updater start - ${new Date().toLocaleTimeString()}`)
 }
 
 /**
