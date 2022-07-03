@@ -373,6 +373,8 @@ export const stopStatisticsUpdater = () => {
 }
 
 export const startStatisticsUpdater = () => {
+	stopStatisticsUpdater()
+
 	statisticsUpdater = setInterval(() => {
 		updateStatistics()
 	}, 60000)

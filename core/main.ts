@@ -32,6 +32,7 @@ if (app.isPackaged === false) {
 // Dev tools
 debug({
 	showDevTools: false,
+	isEnabled: true,
 })
 
 /**
