@@ -161,7 +161,8 @@ const updateCalendar = () => {
 
 	// adjust calendar
 	for (let i = 1; i < 8; i++) {
-		const name = currentDate.date.toLocaleString("en", { weekday: "long" })
+		const date = new Date(`${currentDate.year}-${currentDate.month}-${i}`)
+		const name = date.toLocaleString("en", { weekday: "long" })
 
 		document.querySelector(`.week${i}`).textContent = name
 	}
