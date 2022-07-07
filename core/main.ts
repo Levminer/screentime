@@ -1,11 +1,12 @@
 import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, globalShortcut, Tray, powerMonitor as power } from "electron"
+import { existsSync, mkdirSync, writeFileSync } from "fs"
+import { type, arch, release, cpus, totalmem } from "os"
 import { enable, initialize } from "@electron/remote/main"
 import { autoUpdater } from "electron-updater"
 import { date, number } from "../build.json"
 import AutoLaunch = require("auto-launch")
+import debug = require("electron-debug")
 import { join } from "path"
-import { type, arch, release, cpus, totalmem } from "os"
-import { existsSync, mkdirSync, writeFileSync } from "fs"
 
 /**
  * Window states
@@ -25,14 +26,14 @@ let firstStart = false
 let dev = false
 
 if (app.isPackaged === false) {
-	const debug = require("electron-debug")
-
-	debug({
-		showDevTools: false,
-	})
-
 	dev = true
 }
+
+// Dev tools
+debug({
+	showDevTools: false,
+	isEnabled: true,
+})
 
 /**
  * Version and logging
