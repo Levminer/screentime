@@ -3,8 +3,7 @@ import { getDate, toHoursAndMinutes } from "../../libraries/date"
 import { ipcRenderer as ipc } from "electron"
 import { app } from "@electron/remote"
 import * as settings from "./functions/settings"
-import { join } from "path"
-import { readFileSync } from "fs"
+import build from "../../build.json"
 
 /**
  * States
@@ -24,12 +23,6 @@ let dev = false
 if (app.isPackaged === false) {
 	dev = true
 }
-
-/**
- * Get settings file
- */
-const folderPath = dev ? join(app.getPath("appData"), "Levminer", "Screentime Dev") : join(app.getPath("appData"), "Levminer", "Screentime")
-const settingsFile: LibSettings = JSON.parse(readFileSync(join(folderPath, "settings.json"), "utf-8"))
 
 /**
  * Load storage
@@ -57,6 +50,25 @@ if (storage === null) {
 	localStorage.setItem("storage", JSON.stringify(tempStorage))
 
 	storage = tempStorage
+
+	// settings
+	const settings: LibSettings = {
+		info: {
+			version: build.version,
+			build: build.number,
+			date: build.date,
+		},
+
+		settings: {
+			launchOnStartup: true,
+		},
+	}
+
+	localStorage.setItem("settings", JSON.stringify(settings))
+
+	if (dev === false) {
+		ipc.invoke("toggleStartup")
+	}
 }
 
 /**
@@ -393,5 +405,5 @@ statisticsUpdater = setInterval(() => {
 createCharts()
 updateStatistics()
 
-settings.setupSettings(settingsFile)
+settings.setupSettings()
 buildNumber()

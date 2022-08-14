@@ -1,5 +1,4 @@
 import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, globalShortcut, Tray, powerMonitor as power } from "electron"
-import { existsSync, mkdirSync, writeFileSync } from "fs"
 import { type, arch, release, cpus, totalmem } from "os"
 import { enable, initialize } from "@electron/remote/main"
 import { autoUpdater } from "electron-updater"
@@ -18,7 +17,6 @@ let manualUpdate = false
 // Other states
 let tray: Tray
 let menu: Menu
-let firstStart = false
 
 /**
  * Check if running in development mode
@@ -27,13 +25,12 @@ let dev = false
 
 if (app.isPackaged === false) {
 	dev = true
-}
 
-// Dev tools
-debug({
-	showDevTools: false,
-	isEnabled: true,
-})
+	// Dev tools
+	debug({
+		showDevTools: false,
+	})
+}
 
 /**
  * Version and logging
@@ -69,46 +66,6 @@ if (process.platform === "win32") {
 	platform = "mac"
 } else {
 	platform = "linux"
-}
-
-/**
- * Check for folders
- */
-const parentFolder = join(app.getPath("appData"), "Levminer")
-const folderPath = dev ? join(app.getPath("appData"), "Levminer", "Screentime Dev") : join(app.getPath("appData"), "Levminer", "Screentime")
-
-// Check if /Levminer path exists
-if (!existsSync(parentFolder)) {
-	mkdirSync(join(parentFolder))
-}
-
-// Check if /Authme path exists
-if (!existsSync(folderPath)) {
-	mkdirSync(folderPath)
-}
-
-const settingsFile: LibSettings = {
-	info: {
-		version: appVersion,
-		build: buildNumber,
-		date: releaseDate,
-	},
-
-	settings: {
-		launchOnStartup: true,
-	},
-}
-
-// Create settings if not exists
-if (!existsSync(join(folderPath, "settings.json"))) {
-	writeFileSync(join(folderPath, "settings.json"), JSON.stringify(settingsFile, null, "\t"))
-
-	firstStart = true
-}
-
-// Save settings
-const saveSettings = () => {
-	writeFileSync(join(folderPath, "settings.json"), JSON.stringify(settingsFile, null, "\t"))
 }
 
 /**
@@ -180,10 +137,6 @@ const createWindow = () => {
 			mainWindowShown = true
 
 			createTray()
-		}
-
-		if (firstStart === true && dev === false) {
-			autoLauncher.enable()
 		}
 	})
 
@@ -367,17 +320,13 @@ ipc.handle("versionDialog", () => {
 ipc.handle("toggleStartup", async () => {
 	const enabled: boolean = await autoLauncher.isEnabled()
 
+	console.log(`Auto launch: ${enabled}`)
+
 	if (enabled === true) {
 		autoLauncher.disable()
-
-		settingsFile.settings.launchOnStartup = false
 	} else {
 		autoLauncher.enable()
-
-		settingsFile.settings.launchOnStartup = true
 	}
-
-	saveSettings()
 })
 
 ipc.handle("releaseNotes", () => {
