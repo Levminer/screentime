@@ -9,7 +9,7 @@
 		"start": "node scripts/build.js alpha && electron .",
 		"build": "node scripts/build.js release && electron-builder --publish=never --x64",
 		"build:alpha": "node scripts/build.js alpha && electron-builder --publish=never --x64",
-		"build:bundle": "node scripts/alpha-build.js release && tsc && tailwindcss -i ./interface/styles/tailwind.css -o ./interface/styles/styles.css -c .tailwindrc.js --minify",
+		"build:bundle": "node scripts/build.js release && tsc && tailwindcss -i ./interface/styles/tailwind.css -o ./interface/styles/styles.css -c .tailwindrc.js --minify",
 		"watch": "concurrently 'npm:watch:tw' 'npm:watch:ts'",
 		"watch:tw": "tailwindcss -i ./interface/styles/tailwind.css -o ./interface/styles/styles.css -c .tailwindrc.js --minify --watch",
 		"watch:ts": "tsc -w"
