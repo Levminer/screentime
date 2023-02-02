@@ -1,9 +1,12 @@
-import { Chart } from "chart.js"
+import { Chart, registerables } from "chart.js"
 import { getDate, toHoursAndMinutes } from "../../libraries/date"
 import { ipcRenderer as ipc } from "electron"
 import { app } from "@electron/remote"
 import * as settings from "./functions/settings"
 import build from "../../build.json"
+
+// Register chart.js plugins
+Chart.register(...registerables)
 
 /**
  * States
@@ -368,6 +371,8 @@ const updateStatistics = () => {
 	}
 
 	localStorage.setItem("storage", JSON.stringify(storage))
+
+	ipc.invoke("updateTrayTooltip", `${hours}h ${minutes}m`)
 
 	setStatistics()
 	updateCharts()

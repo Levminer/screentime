@@ -333,6 +333,10 @@ ipc.handle("releaseNotes", () => {
 	shell.openExternal("https://github.com/Levminer/screentime/releases")
 })
 
+ipc.handle("updateTrayTooltip", (event, text: string) => {
+	tray.setToolTip(`Screentime\n(${text})`)
+})
+
 /**
  * Create tray menu
  */
