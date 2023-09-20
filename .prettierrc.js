@@ -1,5 +1,5 @@
 module.exports = {
-	endOfLine: "crlf",
+	endOfLine: "auto",
 	trailingComma: "es5",
 	tabWidth: 4,
 	printWidth: 1000,

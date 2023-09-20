@@ -13,8 +13,8 @@ Chart.register(...registerables)
  */
 let minutes: number = 0
 let hours: number = 0
-let weekChart: Chart
-let monthChart: Chart
+let weekChart: Chart<"bar">
+let monthChart: Chart<"pie">
 const { year } = getDate()
 let statisticsUpdater: NodeJS.Timeout
 
