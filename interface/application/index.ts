@@ -1,7 +1,6 @@
 import { Chart, registerables } from "chart.js"
 import { getDate, toHoursAndMinutes } from "../../libraries/date"
 import { ipcRenderer as ipc } from "electron"
-import { app } from "@electron/remote"
 import * as settings from "./functions/settings"
 import build from "../../build.json"
 
@@ -21,11 +20,9 @@ let statisticsUpdater: NodeJS.Timeout
 /**
  * Check if running in development
  */
-let dev = false
+const dev: boolean = ipc.sendSync("getDevMode")
 
-if (app.isPackaged === false) {
-	dev = true
-}
+console.log(`Running in development mode: ${dev}`)
 
 /**
  * Load storage

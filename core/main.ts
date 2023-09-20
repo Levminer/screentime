@@ -1,6 +1,5 @@
 import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, globalShortcut, Tray, powerMonitor as power } from "electron"
 import { type, arch, release, cpus, totalmem } from "os"
-import { enable, initialize } from "@electron/remote/main"
 import { autoUpdater } from "electron-updater"
 import { date, number } from "../build.json"
 import AutoLaunch = require("auto-launch")
@@ -12,7 +11,6 @@ import { join } from "path"
  */
 let mainWindow: BrowserWindow
 let mainWindowShown = false
-let manualUpdate = false
 let tray: Tray
 
 /**
@@ -20,7 +18,7 @@ let tray: Tray
  */
 let dev = false
 
-if (app.isPackaged === false) {
+if (!app.isPackaged) {
 	dev = true
 
 	// Dev tools
@@ -53,25 +51,12 @@ const osInfo = `${cpus()[0].model.split("@")[0]} ${Math.ceil(totalmem() / 1024 /
 	.replace(/ +(?= )/g, "")
 
 /**
- * Get platform
- */
-let platform: LibPlatform
-
-if (process.platform === "win32") {
-	platform = "windows"
-} else if (process.platform === "darwin") {
-	platform = "mac"
-} else {
-	platform = "linux"
-}
-
-/**
  * Allow only one instance
  */
-if (dev === false) {
+if (!dev) {
 	const lock = app.requestSingleInstanceLock()
 
-	if (lock === false) {
+	if (!lock) {
 		console.log("Already running, shutting down")
 
 		app.exit()
@@ -103,8 +88,6 @@ const createWindow = () => {
 	})
 
 	// Initialize window
-	initialize()
-	enable(mainWindow.webContents)
 	mainWindow.loadFile(join(__dirname, "../interface/application/index.html"))
 
 	/* Main window events */
@@ -120,7 +103,7 @@ const createWindow = () => {
 	})
 
 	mainWindow.on("close", (event) => {
-		if (dev === false) {
+		if (!dev) {
 			event.preventDefault()
 
 			toggleMainWindow()
@@ -138,7 +121,7 @@ const createWindow = () => {
 	/**
 	 * Auto update
 	 */
-	if (dev === false) {
+	if (!dev) {
 		autoUpdater.checkForUpdates()
 	}
 
@@ -154,36 +137,10 @@ const createWindow = () => {
 
 	autoUpdater.on("update-not-available", () => {
 		console.log("Update not available")
-
-		if (manualUpdate === true) {
-			dialog.showMessageBox({
-				title: "Authme",
-				buttons: ["Close"],
-				defaultId: 0,
-				cancelId: 1,
-				noLink: true,
-				type: "info",
-				message: "No update available! \n\nYou are on the latest version.",
-			})
-
-			manualUpdate = false
-		}
 	})
 
 	autoUpdater.on("error", (error) => {
 		console.log("Error during auto update", error.stack)
-
-		if (manualUpdate === true) {
-			dialog.showMessageBox({
-				title: "Authme",
-				buttons: ["Close"],
-				defaultId: 0,
-				cancelId: 1,
-				noLink: true,
-				type: "error",
-				message: `Error during auto update! \n\n${error.stack}`,
-			})
-		}
 	})
 
 	autoUpdater.on("download-progress", (progress) => {
@@ -222,7 +179,7 @@ const createWindow = () => {
  * Show/hide main window
  */
 const toggleMainWindow = () => {
-	if (mainWindowShown === false) {
+	if (!mainWindowShown) {
 		mainWindow.maximize()
 		mainWindow.show()
 
@@ -300,7 +257,7 @@ ipc.handle("toggleStartup", async () => {
 
 	console.log(`Auto launch: ${enabled}`)
 
-	if (enabled === true) {
+	if (enabled) {
 		autoLauncher.disable()
 	} else {
 		autoLauncher.enable()
@@ -313,6 +270,10 @@ ipc.handle("releaseNotes", () => {
 
 ipc.handle("updateTrayTooltip", (event, text: string) => {
 	tray.setToolTip(`Screentime\n(${text})`)
+})
+
+ipc.on("getDevMode", (event) => {
+	event.returnValue = dev
 })
 
 /**
