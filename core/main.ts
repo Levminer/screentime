@@ -8,15 +8,12 @@ import debug = require("electron-debug")
 import { join } from "path"
 
 /**
- * Window states
+ * States
  */
 let mainWindow: BrowserWindow
 let mainWindowShown = false
 let manualUpdate = false
-
-// Other states
 let tray: Tray
-let menu: Menu
 
 /**
  * Check if running in development mode
@@ -91,15 +88,6 @@ if (dev === false) {
  * Create main window
  */
 const createWindow = () => {
-	/**
-	 * Window Controls Overlay
-	 */
-	let wco = false
-
-	if (platform === "windows") {
-		wco = true
-	}
-
 	// Create main window
 	mainWindow = new BrowserWindow({
 		title: `Screentime (${appVersion})`,
@@ -108,16 +96,7 @@ const createWindow = () => {
 		minWidth: 1000,
 		minHeight: 600,
 		show: false,
-		titleBarStyle: wco ? "hidden" : null,
-		titleBarOverlay: wco
-			? {
-					color: "black",
-					symbolColor: "white",
-			  }
-			: null,
-		backgroundColor: "#0A0A0A",
 		webPreferences: {
-			preload: join(__dirname, "./preload/preload.js"),
 			nodeIntegration: true,
 			contextIsolation: false,
 		},
@@ -268,15 +247,14 @@ app.on("ready", () => {
 	tray.on("click", () => {
 		toggleMainWindow()
 		createTray()
-		createMenu()
 	})
 
 	/**
 	 * Start app
 	 */
 	createWindow()
-	createMenu()
 	createTray()
+	Menu.setApplicationMenu(null) // disable default menubar
 })
 
 /**
@@ -367,128 +345,4 @@ const createTray = () => {
 	])
 
 	tray.setContextMenu(contextmenu)
-}
-
-/**
- * Create application menu
- */
-const createMenu = () => {
-	menu = Menu.buildFromTemplate([
-		{
-			label: "File",
-			submenu: [
-				{
-					label: mainWindowShown ? "Show Screentime" : "Hide Screentime",
-					click: () => {
-						toggleMainWindow()
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Settings",
-					accelerator: "CommandOrControl+s",
-					click: () => {
-						mainWindow.webContents.send("toggleSettings")
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Exit Screentime",
-					accelerator: "CommandOrControl+w",
-					click: () => {
-						app.exit()
-					},
-				},
-			],
-		},
-		{
-			label: "View",
-			submenu: [
-				{
-					label: "Reset Zoom",
-					role: "resetZoom",
-					accelerator: "CommandOrControl+0",
-				},
-				{ type: "separator" },
-				{
-					label: "Zoom In",
-					role: "zoomIn",
-					accelerator: "CommandOrControl+1",
-				},
-				{ type: "separator" },
-				{
-					label: "Zoom Out",
-					role: "zoomOut",
-					accelerator: "CommandOrControl+2",
-				},
-			],
-		},
-		{
-			label: "Help",
-			submenu: [
-				{
-					label: "Feedback",
-					click: () => {
-						shell.openExternal("https://github.com/Levminer/screentime/issues")
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Release notes",
-					click: () => {
-						shell.openExternal("https://github.com/Levminer/screentime/releases")
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Support",
-					click: () => {
-						shell.openExternal("https://paypal.me/levminer")
-					},
-				},
-			],
-		},
-		{
-			label: "About",
-			submenu: [
-				{
-					label: "Licenses",
-					click: async () => {
-						const result = await dialog.showMessageBox({
-							title: "Authme",
-							buttons: ["More", "Close"],
-							defaultId: 1,
-							cancelId: 1,
-							noLink: true,
-							type: "info",
-							message: "This software is licensed under GPL-3.0 \n\nCopyright © 2022 Lőrik Levente",
-						})
-
-						if (result.response === 0) {
-							shell.openExternal("https://authme.levminer.com/licenses.html")
-						}
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Update",
-					click: () => {
-						manualUpdate = true
-
-						autoUpdater.checkForUpdates()
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Info",
-					accelerator: "CommandOrControl+i",
-					click: () => {
-						versionDialog()
-					},
-				},
-			],
-		},
-	])
-
-	Menu.setApplicationMenu(menu)
 }
