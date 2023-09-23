@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, globalShortcut, Tray, powerMonitor as power } from "electron"
+import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, Tray, powerMonitor as power } from "electron"
 import { type, arch, release, cpus, totalmem } from "os"
 import { autoUpdater } from "electron-updater"
 import { date, number } from "../build.json"
@@ -75,7 +75,7 @@ if (!dev) {
 const createWindow = () => {
 	// Create main window
 	mainWindow = new BrowserWindow({
-		title: `Screentime (${appVersion})`,
+		title: "Screentime",
 		width: 1900,
 		height: 1000,
 		minWidth: 1000,
@@ -167,11 +167,6 @@ const createWindow = () => {
 
 	ipc.handle("updateRestart", () => {
 		autoUpdater.quitAndInstall(true, true)
-	})
-
-	/* Global shortcut */
-	globalShortcut.register("CommandOrControl+Shift+s", () => {
-		toggleMainWindow()
 	})
 }
 
@@ -283,17 +278,8 @@ const createTray = () => {
 	const contextmenu = Menu.buildFromTemplate([
 		{
 			label: mainWindowShown ? "Hide Screentime" : "Show Screentime",
-			accelerator: "CommandOrControl+Shift+s",
 			click: () => {
 				toggleMainWindow()
-			},
-		},
-		{ type: "separator" },
-		{
-			label: "Settings",
-			click: () => {
-				mainWindow.show()
-				mainWindow.webContents.send("toggleSettings")
 			},
 		},
 		{ type: "separator" },
