@@ -1,7 +1,5 @@
-import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, globalShortcut, Tray, powerMonitor as power } from "electron"
-import { existsSync, mkdirSync, writeFileSync } from "fs"
+import { app, BrowserWindow, dialog, shell, clipboard, Menu, ipcMain as ipc, Tray, powerMonitor as power } from "electron"
 import { type, arch, release, cpus, totalmem } from "os"
-import { enable, initialize } from "@electron/remote/main"
 import { autoUpdater } from "electron-updater"
 import { date, number } from "../build.json"
 import AutoLaunch = require("auto-launch")
@@ -9,31 +7,25 @@ import debug = require("electron-debug")
 import { join } from "path"
 
 /**
- * Window states
+ * States
  */
 let mainWindow: BrowserWindow
 let mainWindowShown = false
-let manualUpdate = false
-
-// Other states
 let tray: Tray
-let menu: Menu
-let firstStart = false
 
 /**
  * Check if running in development mode
  */
 let dev = false
 
-if (app.isPackaged === false) {
+if (!app.isPackaged) {
 	dev = true
-}
 
-// Dev tools
-debug({
-	showDevTools: false,
-	isEnabled: true,
-})
+	// Dev tools
+	debug({
+		showDevTools: false,
+	})
+}
 
 /**
  * Version and logging
@@ -59,65 +51,12 @@ const osInfo = `${cpus()[0].model.split("@")[0]} ${Math.ceil(totalmem() / 1024 /
 	.replace(/ +(?= )/g, "")
 
 /**
- * Get platform
- */
-let platform: LibPlatform
-
-if (process.platform === "win32") {
-	platform = "windows"
-} else if (process.platform === "darwin") {
-	platform = "mac"
-} else {
-	platform = "linux"
-}
-
-/**
- * Check for folders
- */
-const parentFolder = join(app.getPath("appData"), "Levminer")
-const folderPath = dev ? join(app.getPath("appData"), "Levminer", "Screentime Dev") : join(app.getPath("appData"), "Levminer", "Screentime")
-
-// Check if /Levminer path exists
-if (!existsSync(parentFolder)) {
-	mkdirSync(join(parentFolder))
-}
-
-// Check if /Authme path exists
-if (!existsSync(folderPath)) {
-	mkdirSync(folderPath)
-}
-
-const settingsFile: LibSettings = {
-	info: {
-		version: appVersion,
-		build: buildNumber,
-		date: releaseDate,
-	},
-
-	settings: {
-		launchOnStartup: true,
-	},
-}
-
-// Create settings if not exists
-if (!existsSync(join(folderPath, "settings.json"))) {
-	writeFileSync(join(folderPath, "settings.json"), JSON.stringify(settingsFile, null, "\t"))
-
-	firstStart = true
-}
-
-// Save settings
-const saveSettings = () => {
-	writeFileSync(join(folderPath, "settings.json"), JSON.stringify(settingsFile, null, "\t"))
-}
-
-/**
  * Allow only one instance
  */
-if (dev === false) {
+if (!dev) {
 	const lock = app.requestSingleInstanceLock()
 
-	if (lock === false) {
+	if (!lock) {
 		console.log("Already running, shutting down")
 
 		app.exit()
@@ -134,41 +73,21 @@ if (dev === false) {
  * Create main window
  */
 const createWindow = () => {
-	/**
-	 * Window Controls Overlay
-	 */
-	let wco = false
-
-	if (platform === "windows") {
-		wco = true
-	}
-
 	// Create main window
 	mainWindow = new BrowserWindow({
-		title: `Screentime (${appVersion})`,
+		title: "Screentime",
 		width: 1900,
 		height: 1000,
 		minWidth: 1000,
 		minHeight: 600,
 		show: false,
-		titleBarStyle: wco ? "hidden" : null,
-		titleBarOverlay: wco
-			? {
-					color: "black",
-					symbolColor: "white",
-			  }
-			: null,
-		backgroundColor: "#0A0A0A",
 		webPreferences: {
-			preload: join(__dirname, "./preload/preload.js"),
 			nodeIntegration: true,
 			contextIsolation: false,
 		},
 	})
 
 	// Initialize window
-	initialize()
-	enable(mainWindow.webContents)
 	mainWindow.loadFile(join(__dirname, "../interface/application/index.html"))
 
 	/* Main window events */
@@ -181,14 +100,10 @@ const createWindow = () => {
 
 			createTray()
 		}
-
-		if (firstStart === true && dev === false) {
-			autoLauncher.enable()
-		}
 	})
 
 	mainWindow.on("close", (event) => {
-		if (dev === false) {
+		if (!dev) {
 			event.preventDefault()
 
 			toggleMainWindow()
@@ -206,7 +121,7 @@ const createWindow = () => {
 	/**
 	 * Auto update
 	 */
-	if (dev === false) {
+	if (!dev) {
 		autoUpdater.checkForUpdates()
 	}
 
@@ -222,36 +137,10 @@ const createWindow = () => {
 
 	autoUpdater.on("update-not-available", () => {
 		console.log("Update not available")
-
-		if (manualUpdate === true) {
-			dialog.showMessageBox({
-				title: "Authme",
-				buttons: ["Close"],
-				defaultId: 0,
-				cancelId: 1,
-				noLink: true,
-				type: "info",
-				message: "No update available! \n\nYou are on the latest version.",
-			})
-
-			manualUpdate = false
-		}
 	})
 
 	autoUpdater.on("error", (error) => {
 		console.log("Error during auto update", error.stack)
-
-		if (manualUpdate === true) {
-			dialog.showMessageBox({
-				title: "Authme",
-				buttons: ["Close"],
-				defaultId: 0,
-				cancelId: 1,
-				noLink: true,
-				type: "error",
-				message: `Error during auto update! \n\n${error.stack}`,
-			})
-		}
 	})
 
 	autoUpdater.on("download-progress", (progress) => {
@@ -279,18 +168,13 @@ const createWindow = () => {
 	ipc.handle("updateRestart", () => {
 		autoUpdater.quitAndInstall(true, true)
 	})
-
-	/* Global shortcut */
-	globalShortcut.register("CommandOrControl+Shift+s", () => {
-		toggleMainWindow()
-	})
 }
 
 /**
  * Show/hide main window
  */
 const toggleMainWindow = () => {
-	if (mainWindowShown === false) {
+	if (!mainWindowShown) {
 		mainWindow.maximize()
 		mainWindow.show()
 
@@ -315,15 +199,14 @@ app.on("ready", () => {
 	tray.on("click", () => {
 		toggleMainWindow()
 		createTray()
-		createMenu()
 	})
 
 	/**
 	 * Start app
 	 */
 	createWindow()
-	createMenu()
 	createTray()
+	Menu.setApplicationMenu(null) // disable default menubar
 })
 
 /**
@@ -367,21 +250,25 @@ ipc.handle("versionDialog", () => {
 ipc.handle("toggleStartup", async () => {
 	const enabled: boolean = await autoLauncher.isEnabled()
 
-	if (enabled === true) {
-		autoLauncher.disable()
+	console.log(`Auto launch: ${enabled}`)
 
-		settingsFile.settings.launchOnStartup = false
+	if (enabled) {
+		autoLauncher.disable()
 	} else {
 		autoLauncher.enable()
-
-		settingsFile.settings.launchOnStartup = true
 	}
-
-	saveSettings()
 })
 
 ipc.handle("releaseNotes", () => {
 	shell.openExternal("https://github.com/Levminer/screentime/releases")
+})
+
+ipc.handle("updateTrayTooltip", (event, text: string) => {
+	tray.setToolTip(`Screentime\n(${text})`)
+})
+
+ipc.on("getDevMode", (event) => {
+	event.returnValue = dev
 })
 
 /**
@@ -391,17 +278,8 @@ const createTray = () => {
 	const contextmenu = Menu.buildFromTemplate([
 		{
 			label: mainWindowShown ? "Hide Screentime" : "Show Screentime",
-			accelerator: "CommandOrControl+Shift+s",
 			click: () => {
 				toggleMainWindow()
-			},
-		},
-		{ type: "separator" },
-		{
-			label: "Settings",
-			click: () => {
-				mainWindow.show()
-				mainWindow.webContents.send("toggleSettings")
 			},
 		},
 		{ type: "separator" },
@@ -414,128 +292,4 @@ const createTray = () => {
 	])
 
 	tray.setContextMenu(contextmenu)
-}
-
-/**
- * Create application menu
- */
-const createMenu = () => {
-	menu = Menu.buildFromTemplate([
-		{
-			label: "File",
-			submenu: [
-				{
-					label: mainWindowShown ? "Show Screentime" : "Hide Screentime",
-					click: () => {
-						toggleMainWindow()
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Settings",
-					accelerator: "CommandOrControl+s",
-					click: () => {
-						mainWindow.webContents.send("toggleSettings")
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Exit Screentime",
-					accelerator: "CommandOrControl+w",
-					click: () => {
-						app.exit()
-					},
-				},
-			],
-		},
-		{
-			label: "View",
-			submenu: [
-				{
-					label: "Reset Zoom",
-					role: "resetZoom",
-					accelerator: "CommandOrControl+0",
-				},
-				{ type: "separator" },
-				{
-					label: "Zoom In",
-					role: "zoomIn",
-					accelerator: "CommandOrControl+1",
-				},
-				{ type: "separator" },
-				{
-					label: "Zoom Out",
-					role: "zoomOut",
-					accelerator: "CommandOrControl+2",
-				},
-			],
-		},
-		{
-			label: "Help",
-			submenu: [
-				{
-					label: "Feedback",
-					click: () => {
-						shell.openExternal("https://github.com/Levminer/screentime/issues")
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Release notes",
-					click: () => {
-						shell.openExternal("https://github.com/Levminer/screentime/releases")
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Support",
-					click: () => {
-						shell.openExternal("https://paypal.me/levminer")
-					},
-				},
-			],
-		},
-		{
-			label: "About",
-			submenu: [
-				{
-					label: "Licenses",
-					click: async () => {
-						const result = await dialog.showMessageBox({
-							title: "Authme",
-							buttons: ["More", "Close"],
-							defaultId: 1,
-							cancelId: 1,
-							noLink: true,
-							type: "info",
-							message: "This software is licensed under GPL-3.0 \n\nCopyright © 2022 Lőrik Levente",
-						})
-
-						if (result.response === 0) {
-							shell.openExternal("https://authme.levminer.com/licenses.html")
-						}
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Update",
-					click: () => {
-						manualUpdate = true
-
-						autoUpdater.checkForUpdates()
-					},
-				},
-				{ type: "separator" },
-				{
-					label: "Info",
-					accelerator: "CommandOrControl+i",
-					click: () => {
-						versionDialog()
-					},
-				},
-			],
-		},
-	])
-
-	Menu.setApplicationMenu(menu)
 }

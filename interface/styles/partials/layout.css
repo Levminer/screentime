@@ -5,8 +5,8 @@
 
 /* body */
 body {
-	background: rgb(0, 63, 92);
-	background: linear-gradient(200deg, rgba(0, 63, 92, 1) 0%, rgba(55, 76, 128, 1) 15%, rgba(122, 81, 149, 1) 33%, rgba(188, 80, 144, 1) 50%, rgba(239, 86, 117, 1) 66%, rgba(255, 118, 74, 1) 85%, rgba(255, 166, 0, 1) 100%);
+	background: rgb(27, 87, 136);
+	background: linear-gradient(200deg, rgba(27, 87, 136, 1) 0%, rgba(87, 90, 158, 1) 15%, rgba(140, 96, 169, 1) 33%, rgba(199, 107, 162, 1) 50%, rgba(241, 106, 133, 1) 66%, rgba(255, 148, 112, 1) 85%, rgba(255, 176, 31, 1) 100%);
 	color: white;
 }
 
@@ -99,7 +99,6 @@ a {
 	background-color: rgb(40, 40, 40) !important;
 	opacity: 1 !important;
 }
-
 
 /* animation */
 @keyframes fadeEffect {

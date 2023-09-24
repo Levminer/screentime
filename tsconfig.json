@@ -6,7 +6,8 @@
 		"checkJs": true,
 		"strictFunctionTypes": true,
 		"resolveJsonModule": true,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"esModuleInterop": true
 	},
 	"exclude": ["node_modules", "dist", "scripts"]
 }

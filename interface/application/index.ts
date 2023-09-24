@@ -1,35 +1,26 @@
-import { Chart } from "chart.js"
+import { Chart, registerables } from "chart.js"
 import { getDate, toHoursAndMinutes } from "../../libraries/date"
 import { ipcRenderer as ipc } from "electron"
-import { app } from "@electron/remote"
 import * as settings from "./functions/settings"
-import { join } from "path"
-import { readFileSync } from "fs"
+import build from "../../build.json"
+
+// Register chart.js plugins
+Chart.register(...registerables)
 
 /**
  * States
  */
 let minutes: number = 0
 let hours: number = 0
-let weekChart: Chart
-let monthChart: Chart
+let weekChart: Chart<"bar">
+let monthChart: Chart<"pie">
 const { year } = getDate()
 let statisticsUpdater: NodeJS.Timeout
 
 /**
  * Check if running in development
  */
-let dev = false
-
-if (app.isPackaged === false) {
-	dev = true
-}
-
-/**
- * Get settings file
- */
-const folderPath = dev ? join(app.getPath("appData"), "Levminer", "Screentime Dev") : join(app.getPath("appData"), "Levminer", "Screentime")
-const settingsFile: LibSettings = JSON.parse(readFileSync(join(folderPath, "settings.json"), "utf-8"))
+const dev: boolean = ipc.sendSync("getDevMode")
 
 /**
  * Load storage
@@ -57,6 +48,25 @@ if (storage === null) {
 	localStorage.setItem("storage", JSON.stringify(tempStorage))
 
 	storage = tempStorage
+
+	// settings
+	const settings: LibSettings = {
+		info: {
+			version: build.version,
+			build: build.number,
+			date: build.date,
+		},
+
+		settings: {
+			launchOnStartup: true,
+		},
+	}
+
+	localStorage.setItem("settings", JSON.stringify(settings))
+
+	if (dev === false) {
+		ipc.invoke("toggleStartup")
+	}
 }
 
 /**
@@ -88,7 +98,7 @@ const createCharts = () => {
 				{
 					label: "Hours",
 					data: weekDataset,
-					backgroundColor: ["#15446A", "#4A4D86", "#7a5195", "#bc5090", "#ef5675", "#ff764a", "#ffa600"],
+					backgroundColor: ["#1b5788", "#575a9e", "#8C60A9", "#C76BA2", "#F16A85", "#FF9470", "#FFB01F"],
 					borderColor: ["gray"],
 				},
 			],
@@ -133,7 +143,7 @@ const createCharts = () => {
 				{
 					label: "Hours",
 					data: monthDataset,
-					backgroundColor: ["#15446A", "#4A4D86", "#7a5195", "#bc5090", "#ef5675", "#ff764a", "#ffa600"],
+					backgroundColor: ["#1b5788", "#575a9e", "#8C60A9", "#C76BA2", "#F16A85", "#FF9470", "#FFB01F", "#bc4749", "#a7c957", "#e0afa0", "#7678ed", "#fb8500"],
 				},
 			],
 		},
@@ -357,6 +367,8 @@ const updateStatistics = () => {
 
 	localStorage.setItem("storage", JSON.stringify(storage))
 
+	ipc.invoke("updateTrayTooltip", `${hours}h ${minutes}m`)
+
 	setStatistics()
 	updateCharts()
 	updateCalendar()
@@ -393,5 +405,5 @@ statisticsUpdater = setInterval(() => {
 createCharts()
 updateStatistics()
 
-settings.setupSettings(settingsFile)
+settings.setupSettings()
 buildNumber()
