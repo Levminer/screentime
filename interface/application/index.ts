@@ -22,8 +22,6 @@ let statisticsUpdater: NodeJS.Timeout
  */
 const dev: boolean = ipc.sendSync("getDevMode")
 
-console.log(`Running in development mode: ${dev}`)
-
 /**
  * Load storage
  */
@@ -100,7 +98,7 @@ const createCharts = () => {
 				{
 					label: "Hours",
 					data: weekDataset,
-					backgroundColor: ["#15446A", "#4A4D86", "#7a5195", "#bc5090", "#ef5675", "#ff764a", "#ffa600"],
+					backgroundColor: ["#1b5788", "#575a9e", "#8C60A9", "#C76BA2", "#F16A85", "#FF9470", "#FFB01F"],
 					borderColor: ["gray"],
 				},
 			],
@@ -145,7 +143,7 @@ const createCharts = () => {
 				{
 					label: "Hours",
 					data: monthDataset,
-					backgroundColor: ["#15446A", "#4A4D86", "#7a5195", "#bc5090", "#ef5675", "#ff764a", "#ffa600"],
+					backgroundColor: ["#1b5788", "#575a9e", "#8C60A9", "#C76BA2", "#F16A85", "#FF9470", "#FFB01F", "#bc4749", "#a7c957", "#e0afa0", "#7678ed", "#fb8500"],
 				},
 			],
 		},
