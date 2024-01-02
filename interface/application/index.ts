@@ -395,6 +395,19 @@ export const startStatisticsUpdater = () => {
 	console.log(`Statistics updater start - ${new Date().toLocaleTimeString()}`)
 }
 
+/*
+ * Check if year exists
+ */
+if (storage.statistics[year] === undefined) {
+	storage.statistics[year] = []
+
+	storage.statistics[year].push({
+		hours,
+		minutes,
+		date: getDate(),
+	})
+}
+
 /**
  * Save minutes and hours
  */
