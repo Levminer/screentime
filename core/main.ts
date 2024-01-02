@@ -267,6 +267,10 @@ ipc.handle("updateTrayTooltip", (event, text: string) => {
 	tray.setToolTip(`Screentime\n(${text})`)
 })
 
+ipc.handle("powerState", () => {
+	return power.getSystemIdleState(60)
+})
+
 ipc.on("getDevMode", (event) => {
 	event.returnValue = dev
 })

@@ -409,12 +409,21 @@ if (storage.statistics[year] === undefined) {
 }
 
 /**
- * Save minutes and hours
+ * Start updating statistics
  */
-statisticsUpdater = setInterval(() => {
-	updateStatistics()
-}, 60000)
+const startUpdater = async () => {
+	type PowerState = "active" | "idle" | "locked" | "unknown"
+	const powerState: PowerState = await ipc.invoke("powerState")
+	console.log(`Starting power state: ${powerState}`)
 
+	if (powerState === "active" || powerState === "unknown") {
+		statisticsUpdater = setInterval(() => {
+			updateStatistics()
+		}, 60000)
+	}
+}
+
+startUpdater()
 createCharts()
 updateStatistics()
 
