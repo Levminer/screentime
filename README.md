@@ -20,4 +20,4 @@
 ## License
 
 -   This software is licensed under: [GPL-3.0](https://github.com/Levminer/authme/blob/main/LICENSE.md)
--   If you are planning to use this software as a business please support the project and contact me at: <authme@levminer.com>
+-   If you are planning to use this software as a business please support the project and contact me at: <screentime@levminer.com>

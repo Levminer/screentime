@@ -395,13 +395,35 @@ export const startStatisticsUpdater = () => {
 	console.log(`Statistics updater start - ${new Date().toLocaleTimeString()}`)
 }
 
-/**
- * Save minutes and hours
+/*
+ * Check if year exists
  */
-statisticsUpdater = setInterval(() => {
-	updateStatistics()
-}, 60000)
+if (storage.statistics[year] === undefined) {
+	storage.statistics[year] = []
 
+	storage.statistics[year].push({
+		hours,
+		minutes,
+		date: getDate(),
+	})
+}
+
+/**
+ * Start updating statistics
+ */
+const startUpdater = async () => {
+	type PowerState = "active" | "idle" | "locked" | "unknown"
+	const powerState: PowerState = await ipc.invoke("powerState")
+	console.log(`Starting power state: ${powerState}`)
+
+	if (powerState === "active" || powerState === "unknown") {
+		statisticsUpdater = setInterval(() => {
+			updateStatistics()
+		}, 60000)
+	}
+}
+
+startUpdater()
 createCharts()
 updateStatistics()
 
