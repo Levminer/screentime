@@ -25,7 +25,7 @@ jobs:
             - name: Run build
               run: npm run build:bundle && npm run build:alpha
             - name: Upload artifacts
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v4
               with:
                   name: screentime-latest-alpha-${{matrix.NAME}}-x64-installer-portable
                   path: dist
