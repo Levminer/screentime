@@ -89,6 +89,11 @@ const createWindow = () => {
 
 	// Initialize window
 	mainWindow.loadFile(join(__dirname, "../interface/application/index.html"))
+	mainWindow.webContents.setWindowOpenHandler((details) => {
+		shell.openExternal(details.url)
+		return { action: "deny" }
+	})
+	mainWindow.webContents.openDevTools()
 
 	/* Main window events */
 	mainWindow.on("ready-to-show", () => {

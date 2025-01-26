@@ -11,7 +11,7 @@ export const getDate = () => {
 
 	const year = date.getFullYear().toString()
 	const month = date.toLocaleString("en", { month: "long" })
-	const day = date.toISOString().substring(8, 10)
+	const day = date.toLocaleDateString("en", { day: "2-digit" })
 	const name = date.toLocaleDateString("en", { weekday: "long" })
 
 	const monthID = date.getMonth()
