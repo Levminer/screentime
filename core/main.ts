@@ -93,7 +93,6 @@ const createWindow = () => {
 		shell.openExternal(details.url)
 		return { action: "deny" }
 	})
-	mainWindow.webContents.openDevTools()
 
 	/* Main window events */
 	mainWindow.on("ready-to-show", () => {
